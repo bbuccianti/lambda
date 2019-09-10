@@ -9,5 +9,12 @@
          (p/parse (l/lex "x")))))
 
 (deftest aplicacion
-  (is (= {:apl [{:var "x"} {:var "x"}]}
+  (is (= {:apli {:opdor {:var "x"}
+                 :opndo {:var "x"}}}
          (p/parse (l/lex "(x x)")))))
+
+(deftest abstraccion
+  (is (= {:abst {:param {:var "x"}
+                 :cuerpo {:apli {:opdor {:var "x"}
+                                 :opndo {:var "x"}}}}}
+         (p/parse (l/lex "(λx.(x x))")))))
