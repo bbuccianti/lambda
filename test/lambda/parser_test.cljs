@@ -7,3 +7,7 @@
 (deftest expressions
   (is (= '((λ x (x y)) (w z))
          (p/parse (l/lex "((λ.(x y)) z)")))))
+(deftest variables
+  (is (= [{:var "x"}]
+         (p/parse (l/lex "x")))))
+

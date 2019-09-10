@@ -1,8 +1,9 @@
 (ns lambda.parser)
 
-(defn encontrar [v]
-  )
+(defn match [s]
+  (case (:tipo s)
+    :ident {:var (:string s)}
+    {:error s}))
 
 (defn parse [lexed]
-  (if (= :abre-p (:tipo (first lexed)))
-    (encontrar (subvec (vec lexed) 1))))
+  (mapv match lexed))
