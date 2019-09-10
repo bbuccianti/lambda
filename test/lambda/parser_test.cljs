@@ -4,10 +4,10 @@
    [lambda.lexer :as l]
    [lambda.parser :as p]))
 
-(deftest expressions
-  (is (= '((λ x (x y)) (w z))
-         (p/parse (l/lex "((λ.(x y)) z)")))))
 (deftest variables
   (is (= [{:var "x"}]
          (p/parse (l/lex "x")))))
 
+(deftest aplicacion
+  (is (= {:apl [{:var "x"} {:var "x"}]}
+         (p/parse (l/lex "(x x)")))))
