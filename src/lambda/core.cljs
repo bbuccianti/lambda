@@ -5,16 +5,13 @@
    [reagent.core :as r :refer [atom]]
    [lambda.lexer :as l]))
 
-(enable-console-print!)
-
 (defonce estado (atom {:expresion ""}))
 
 (defn reducir [s]
   (l/lex s))
 
 (defn salida-expr []
-  [:div
-   (:expresion @estado)])
+  [:div (:expresion @estado)])
 
 (defn entrada-expr []
   [:div
