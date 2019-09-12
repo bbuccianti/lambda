@@ -91,8 +91,7 @@
                                    [figwheel-sidecar "0.5.19"]
                                    [cider/piggieback "0.4.1"]
                                    [cider/nrepl "0.3.0"]
-                                   [pjstadig/humane-test-output "0.8.2"]
-                                   [com.bhauman/cljs-test-display "0.1.1"]]
+                                   [pjstadig/humane-test-output "0.8.2"]]
                    :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
                    :injections [(require 'pjstadig.humane-test-output)
                                 (pjstadig.humane-test-output/activate!)]
