@@ -90,8 +90,12 @@
   :profiles {:dev {:dependencies  [[binaryage/devtools "0.9.10"]
                                    [figwheel-sidecar "0.5.19"]
                                    [cider/piggieback "0.4.1"]
-                                   [cider/nrepl "0.3.0"]]
+                                   [cider/nrepl "0.3.0"]
+                                   [pjstadig/humane-test-output "0.8.2"]
+                                   [com.bhauman/cljs-test-display "0.1.1"]]
                    :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
+                   :injections [(require 'pjstadig.humane-test-output)
+                                (pjstadig.humane-test-output/activate!)]
                    ;; need to add dev source path here to get user.clj loaded
                    :source-paths  ["src" "dev"]
                    ;; need to add the compliled assets to the :clean-targets
