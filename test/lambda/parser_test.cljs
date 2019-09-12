@@ -22,7 +22,18 @@
 
 (deftest abstraccion
   (is (= {:abst {:param {:var "x"}
-                 :cuerpo {:apli {:opdor {:apli {:opdor {:var "x"}
-                                                :opndo {:var "x"}}}
-                                 :opndo nil}}}}
+                 :cuerpo {:apli {:opdor {:var "x"}
+                                 :opndo {:var "x"}}}}}
          (p/parse (l/lex "(λx.(x x))")))))
+
+(deftest expresiones
+  (is (= {:apli
+          {:opdor {:apli
+                   {:opdor {:abst {:param {:var "x"}
+                                   :cuerpo {:apli {:opdor {:var "x"}
+                                                   :opndo {:var "y"}}}}}
+                    :opndo {:abst {:param {:var "y"}
+                                   :cuerpo {:apli {:opdor {:var "y"}
+                                                   :opndo {:var "y"}}}}}}}
+           :opndo {:var "z"}}}
+         (p/parse (l/lex "(((λx.(x y)) (λy.(y y))) z)")))))

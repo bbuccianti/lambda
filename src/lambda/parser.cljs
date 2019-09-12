@@ -6,13 +6,28 @@
         (filter #(= t (second %))
                 (map-indexed vector (subvec v from))))))
 
+(defn find-matching-close
+  ([parens from]
+   (find-matching-close (rest parens) from 0))
+
+  ([parens from count]
+   (let [tipo (second (first parens))]
+     (cond
+       (and (= :cierra-p tipo) (= 0 count))
+       (first (first parens))
+
+       (= :abre-p tipo)
+       (find-matching-close (rest parens) from (inc count))
+
+       (= :cierra-p tipo)
+       (find-matching-close (rest parens) from (dec count))))))
+
 (defn find-correct [v from]
-  (first
-   (nth
-    (reverse
-     (filter #(or (= :cierra-p (second %)) (= :abre-p (second %)))
-             (map-indexed vector v)))
-    from)))
+  (find-matching-close
+   (rest (filter #(or (= :cierra-p (second %))
+                      (= :abre-p (second %)))
+                 (map-indexed vector v)))
+   from))
 
 (defn match [item]
   (case (:tipo item)
@@ -29,19 +44,22 @@
         :cuerpo (transform (subvec v (inc punto)))}})
 
     (and (= (first v) :abre-p) (= (last v) :cierra-p))
-    (if (= 4 (count v))
-      {:apli {:opdor (nth v 1)
-              :opndo (nth v 2)}}
-      {:apli {:opdor (transform (subvec v 1 (find-correct v 1)))
-              :opndo (transform (subvec v (find-correct v 1)))}})
+    (let [c (find-correct v 0)]
+      (if (or (= 5 (count v)) (= 4 (count v)))
+       {:apli {:opdor (nth v 1)
+               :opndo (nth v 2)}}
+       {:apli {:opdor (transform (subvec v 1 c))
+               :opndo (transform (subvec v (inc c)))}}))
 
     (and (= (first v) :cierra-p) (= (last v) :cierra-p))
     (if (= 3 (count v))
       (second v))
 
     (= 2 (count v))
-    {:apli {:opdor (first v)
-            :opndo (second v)}}
+    (if (= :cierra-p (last v))
+      (first v)
+      {:apli {:opdor (first v)
+              :opndo (second v)}})
 
     :else v))
 
