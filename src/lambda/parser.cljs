@@ -7,16 +7,15 @@
                 (map-indexed vector v)))))
 
 (defn- find-matching-close [parens count]
-  (let [tipo (second (first parens))]
-    (and tipo
-         (case tipo
-           :abre-p
-           (find-matching-close (rest parens) (inc count))
+  (if-let [tipo (second (first parens))]
+    (case tipo
+      :abre-p
+      (find-matching-close (rest parens) (inc count))
 
-           :cierra-p
-           (if (= 0 count)
-             (first (first parens))
-             (find-matching-close (rest parens) (dec count)))))))
+      :cierra-p
+      (if (= 0 count)
+        (first (first parens))
+        (find-matching-close (rest parens) (dec count))))))
 
 (defn- find-correct [v]
   (find-matching-close
