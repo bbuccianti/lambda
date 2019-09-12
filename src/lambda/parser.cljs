@@ -1,6 +1,6 @@
 (ns lambda.parser)
 
-(defn find-next [t v]
+(defn- find-next [t v]
   (first
    (map first
         (filter #(= t (second %))
@@ -18,20 +18,19 @@
              (first (first parens))
              (find-matching-close (rest parens) (dec count)))))))
 
-
-(defn find-correct [v]
+(defn- find-correct [v]
   (find-matching-close
    (rest (filter #(or (= :cierra-p (second %)) (= :abre-p (second %)))
                  (map-indexed vector v)))
    0))
 
-(defn match [item]
+(defn- match [item]
   (case (:tipo item)
     :ident
     {:var (:string item)}
     (:tipo item)))
 
-(defn transform [v]
+(defn- transform [v]
   (cond
     (and (= (first v) :abre-p) (= (second v) :lambda))
     (let [punto (find-next :punto v)]
