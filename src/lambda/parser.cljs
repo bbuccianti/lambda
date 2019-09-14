@@ -35,22 +35,15 @@
         :cuerpo (transform (subvec v (inc punto)))}})
 
     (and (= (first v) :abre-p) (= (last v) :cierra-p))
-    (let [c (find-correct (rest v))]
-      (if (or (= 5 (count v)) (= 4 (count v)))
-       {:apli {:opdor (nth v 1)
-               :opndo (nth v 2)}}
-       {:apli {:opdor (transform (subvec v 1 (inc c)))
-               :opndo (transform (subvec v (+ c 2)))}}))
-
-    (and (= (first v) :cierra-p) (= (last v) :cierra-p))
-    (if (= 3 (count v))
-      (second v))
+    (if (or (= 5 (count v)) (= 4 (count v)))
+      {:apli {:opdor (nth v 1)
+              :opndo (nth v 2)}}
+      (let [c (find-matching-close v)]
+        {:apli {:opdor (transform (subvec v 1 c))
+                :opndo (transform (subvec v (inc c)))}}))
 
     (= 2 (count v))
-    (if (= :cierra-p (last v))
-      (first v)
-      {:apli {:opdor (first v)
-              :opndo (second v)}})
+    (first v)
 
     :else v))
 
