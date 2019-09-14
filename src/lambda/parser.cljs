@@ -6,27 +6,24 @@
         (filter #(= t (second %))
                 (map-indexed vector v)))))
 
-(defn- find-matching-close [parens count]
-  (if-let [tipo (second (first parens))]
-    (case tipo
-      :abre-p
-      (find-matching-close (rest parens) (inc count))
+(defn- find-matching-close [v]
+  (if-let [f (filter #(or (= :cierra-p (second %))
+                          (= :abre-p (second %)))
+                     (map-indexed vector v))]
+    (loop [parens (rest f)
+           count 0]
+      (case (second (first parens))
+        :abre-p
+        (recur (rest parens) (inc count))
 
-      :cierra-p
-      (if (= 0 count)
-        (first (first parens))
-        (find-matching-close (rest parens) (dec count))))))
-
-(defn- find-correct [v]
-  (find-matching-close
-   (rest (filter #(or (= :cierra-p (second %)) (= :abre-p (second %)))
-                 (map-indexed vector v)))
-   0))
+        :cierra-p
+        (if (= 0 (dec count))
+          (first (first parens))
+          (recur (rest parens) (dec count)))))))
 
 (defn- match [item]
   (case (:tipo item)
-    :ident
-    {:var (:string item)}
+    :ident {:var (:string item)}
     (:tipo item)))
 
 (defn- transform [v]
