@@ -42,10 +42,7 @@
         {:apli {:opdor (transform (subvec v 1 c))
                 :opndo (transform (subvec v (inc c)))}}))
 
-    (= 2 (count v))
-    (first v)
-
-    :else v))
+    :else (first v)))
 
 (defn parse [lexed]
   (transform (mapv match lexed)))

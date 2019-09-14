@@ -5,7 +5,7 @@
    [lambda.parser :as p]))
 
 (deftest variables
-  (is (= [{:var "x"}]
+  (is (= {:var "x"}
          (p/parse (l/lex "x")))))
 
 (deftest aplicacion
