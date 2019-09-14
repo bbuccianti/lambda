@@ -2,10 +2,10 @@
   (:require
    [clojure.string :as string]))
 
-(defn all? [f s]
+(defn- all? [f s]
   (and (re-matches #"[A-Za-z]*" s) (= s (f s))))
 
-(defn traducir [s]
+(defn- traducir [s]
   (cond
     (= "(" s)                    :abre-p
     (= ")" s)                    :cierra-p

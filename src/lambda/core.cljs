@@ -2,24 +2,28 @@
   (:require
    [goog.dom :as gdom]
    [clojure.string :as string]
-   [reagent.core :as r :refer [atom]]
-   [lambda.lexer :as l]))
+   [reagent.core :as r]
+   [lambda.lexer :as l]
+   [lambda.parser :as p]))
 
-(defonce estado (atom {:expresion ""}))
+(defonce state (r/atom {:expr ""}))
 
-(defn reducir [s]
-  (l/lex s))
+(defn reducir [input]
+  (->> input
+       l/lex
+       p/parse))
 
 (defn salida-expr []
-  [:div (:expresion @estado)])
+  [:div
+   [:p (str "expresion: " (:expr @state))]])
 
 (defn entrada-expr []
   [:div
    [:input {:id "expresion"}]
    [:button
     {:on-click
-     #(swap! estado assoc
-             :expresion (reducir (.-value (gdom/getElement "expresion"))))}
+     #(swap! state assoc
+             :expr (reducir (.-value (gdom/getElement "expresion"))))}
     "Reducir"]])
 
 (defn app []
