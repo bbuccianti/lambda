@@ -7,8 +7,9 @@
        first))
 
 (defn- find-matching-close [v]
-  (loop [parens (rest (filter #(contains? #{:cierra-p :abre-p} (second %))
-                              (map-indexed vector v)))
+  (loop [parens (->> (map-indexed vector v)
+                     (filter #(contains? #{:cierra-p :abre-p} (second %)))
+                     rest)
          count 0]
     (case (second (first parens))
       :abre-p
@@ -43,4 +44,5 @@
     :else (first v)))
 
 (defn parse [lexed]
-  (transform (mapv match lexed)))
+  (->> (mapv match lexed)
+       transform))
