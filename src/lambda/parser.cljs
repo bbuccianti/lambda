@@ -1,25 +1,23 @@
 (ns lambda.parser)
 
 (defn- find-next [t v]
-  (first
-   (map first
-        (filter #(= t (second %))
-                (map-indexed vector v)))))
+  (->> (map-indexed vector v)
+       (filter #(= t (second %)))
+       (map first)
+       first))
 
 (defn- find-matching-close [v]
-  (if-let [f (filter #(or (= :cierra-p (second %))
-                          (= :abre-p (second %)))
-                     (map-indexed vector v))]
-    (loop [parens (rest f)
-           count 0]
-      (case (second (first parens))
-        :abre-p
-        (recur (rest parens) (inc count))
+  (loop [parens (rest (filter #(contains? #{:cierra-p :abre-p} (second %))
+                              (map-indexed vector v)))
+         count 0]
+    (case (second (first parens))
+      :abre-p
+      (recur (rest parens) (inc count))
 
-        :cierra-p
-        (if (= 0 (dec count))
-          (first (first parens))
-          (recur (rest parens) (dec count)))))))
+      :cierra-p
+      (if (= 0 (dec count))
+        (first (first parens))
+        (recur (rest parens) (dec count))))))
 
 (defn- match [item]
   (case (:tipo item)
