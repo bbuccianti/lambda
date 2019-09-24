@@ -3,6 +3,7 @@
    [lambda.core-test]
    [lambda.lexer-test]
    [lambda.parser-test]
+   [lambda.reducer-test]
    [pjstadig.humane-test-output]
    [cljs.test :refer-macros [run-tests]]))
 
@@ -10,4 +11,5 @@
   (run-tests
    'lambda.core-test
    'lambda.lexer-test
-   'lambda.parser-test))
+   'lambda.parser-test
+   'lambda.reducer-test))

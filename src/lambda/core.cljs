@@ -4,14 +4,16 @@
    [clojure.string :as string]
    [reagent.core :as r]
    [lambda.lexer :as l]
-   [lambda.parser :as p]))
+   [lambda.parser :as p]
+   [lambda.reducer :as red]))
 
 (defonce state (r/atom {:expr ""}))
 
 (defn reducir [input]
   (->> input
        l/lex
-       p/parse))
+       p/parse
+       red/reduce))
 
 (defn salida-expr []
   [:div
