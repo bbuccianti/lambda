@@ -1,17 +1,13 @@
 (ns lambda.reducer)
 
 (defn- replace-param [param cuerpo opndo]
-  (let [opvar (get-in cuerpo [:apli :opdor :var])
-        opnvar (get-in cuerpo [:apli :opndo :var])]
+  (let [op (get-in cuerpo [:apli :opdor])
+        opn (get-in cuerpo [:apli :opndo])]
     (-> cuerpo
-        (update-in [:apli :opdor :var]
-                   #(if (= (:var param) opvar)
-                      (str (:var opndo))
-                      opvar))
-        (update-in [:apli :opndo :var]
-                   #(if (= (:var param) opnvar)
-                      (str (:var opndo))
-                      opnvar)))))
+        (update-in [:apli :opdor]
+                   #(if (= (:var param) (:var op)) opndo op))
+        (update-in [:apli :opndo]
+                   #(if (= (:var param) (:var opn)) opndo opn)))))
 
 (defn- transform [m]
   (let [{:keys [opdor opndo]} m]

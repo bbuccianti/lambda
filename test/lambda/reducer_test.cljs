@@ -26,3 +26,14 @@
           {:opdor {:var "x"}
            :opndo {:var "a"}}}
          (r/reduce (p/parse (l/lex "((λy.(x y)) a)"))))))
+
+(deftest expresion
+  (is (= {:apli
+          {:opdor {:apli
+                   {:opdor {:var "a"}
+                    :opndo {:var "a"}}}
+           :opndo {:apli
+                   {:opdor {:var "a"}
+                    :opndo {:var "a"}}}}}
+         (r/reduce (p/parse (l/lex "((λx.(x x)) (a a))"))))))
+
