@@ -10,6 +10,7 @@
     (= "(" s)           :abre-p
     (= ")" s)           :cierra-p
     (= "λ" s)           :lambda
+    (= "\\" s)          :lambda
     (= "." s)           :punto
     (all? lower-case s) :ident
     (all? upper-case s) :combi))

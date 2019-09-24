@@ -16,7 +16,7 @@
       (recur (rest parens) (inc count))
 
       :cierra-p
-      (if (= 0 (dec count))
+      (if (or (= 0 count) (= 0 (dec count)))
         (first (first parens))
         (recur (rest parens) (dec count))))))
 
@@ -33,7 +33,7 @@
        {:param (nth v (dec punto))
         :cuerpo (transform (subvec v (inc punto)))}})
 
-    (and (= (first v) :abre-p) (= (last v) :cierra-p))
+    (= (first v) :abre-p)
     (if (or (= 5 (count v)) (= 4 (count v)))
       {:apli {:opdor (nth v 1)
               :opndo (nth v 2)}}
