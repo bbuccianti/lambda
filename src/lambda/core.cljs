@@ -19,11 +19,10 @@
 
 (defn entrada-expr []
   [:div
-   [:input {:id "expresion"}]
+   [:input {:id "input"}]
    [:button
     {:on-click
-     #(swap! state assoc
-             :expr (reducir (.-value (gdom/getElement "expresion"))))}
+     #(swap! state assoc :expr (reducir (.-value (gdom/getElement "input"))))}
     "Reducir"]])
 
 (defn app []
