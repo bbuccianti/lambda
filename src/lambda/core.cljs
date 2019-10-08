@@ -7,8 +7,6 @@
    [lambda.parser :as p]
    [lambda.reducer :as red]))
 
-(defonce state (r/atom {:expr ""}))
-
 (defn reducir [input]
   (->> input
        l/lex
@@ -45,4 +43,3 @@
 
 (defn on-js-reload []
   (mount-app-element))
-
