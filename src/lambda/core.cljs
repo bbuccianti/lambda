@@ -2,33 +2,41 @@
   (:require
    [goog.dom :as gdom]
    [clojure.string :as string]
-   [reagent.core :as r :refer [atom]]
-   [lambda.lexer :as l]))
+   [reagent.core :as r]
+   [lambda.lexer :as l]
+   [lambda.parser :as p]
+   [lambda.reducer :as red]))
 
-(enable-console-print!)
+(defonce state (r/atom {:expr ""}))
 
-(defonce estado (atom {:expresion ""}))
-
-(defn reducir [s]
-  (l/lex s))
-
-(defn salida-expr []
-  [:div
-   (:expresion @estado)])
-
-(defn entrada-expr []
-  [:div
-   [:input {:id "expresion"}]
-   [:button
-    {:on-click
-     #(swap! estado assoc
-             :expresion (reducir (.-value (gdom/getElement "expresion"))))}
-    "Reducir"]])
+(defn reducir [input]
+  (->> input
+       l/lex
+       p/parse
+       red/reduce))
 
 (defn app []
-  [:div
-   [entrada-expr]
-   [salida-expr]])
+  (let [state (r/atom {:input ""})]
+    (fn []
+      [:div
+       [:dvi
+        [:input
+         {:id "input"
+          :value (:input @state)
+          :on-key-press
+          (fn [e]
+            (when (= "\\" (.-key e))
+              (.preventDefault e)
+              (swap! state assoc :input (str (:input @state) "λ"))))
+          :on-change
+          #(swap! state assoc :input (.. % -target -value))}]]
+       [:div
+        [:p
+         (str "expresion: "
+              (try
+                (reducir (:input @state))
+                (catch :default e
+                  e)))]]])))
 
 (defn mount-app-element []
   (when-let [el (gdom/getElement "app")]
