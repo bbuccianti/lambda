@@ -19,8 +19,10 @@
   (let [state (r/atom {:input ""})]
     (fn []
       [:div
-       [:dvi
-        [:input
+       [:div.container.mx-auto.py-3
+        {:style {:font-size "48px"
+                 :border-bottom "solid 3px #000"}}
+        [:input.w-100.text-center.border-0
          {:id "input"
           :value (:input @state)
           :on-key-press
@@ -30,17 +32,16 @@
               (swap! state assoc :input (str (:input @state) "λ"))))
           :on-change
           #(swap! state assoc :input (.. % -target -value))}]]
-       [:div
+       [:div.container.mx-auto.py-3
         [:p
-         (str "expresion: "
-              (try
+         (str (try
                 (reducir (:input @state))
-                (catch :default e
-                  e)))]]])))
+                (catch :default e e)))]]])))
 
 (defn mount-app-element []
   (when-let [el (gdom/getElement "app")]
-    (r/render-component [app] el)))
+    (r/render-component [app] el)
+    (.. (gdom/getElement "input") focus)))
 
 (defn on-js-reload []
   (mount-app-element))
