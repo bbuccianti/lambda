@@ -15,22 +15,28 @@
        p/parse
        red/reduce))
 
-(defn salida-expr []
-  [:div
-   [:p (str "expresion: " (:expr @state))]])
-
-(defn entrada-expr []
-  [:div
-   [:input {:id "input"}]
-   [:button
-    {:on-click
-     #(swap! state assoc :expr (reducir (.-value (gdom/getElement "input"))))}
-    "Reducir"]])
-
 (defn app []
-  [:div
-   [entrada-expr]
-   [salida-expr]])
+  (let [state (r/atom {:input ""})]
+    (fn []
+      [:div
+       [:dvi
+        [:input
+         {:id "input"
+          :value (:input @state)
+          :on-key-press
+          (fn [e]
+            (when (= "\\" (.-key e))
+              (.preventDefault e)
+              (swap! state assoc :input (str (:input @state) "λ"))))
+          :on-change
+          #(swap! state assoc :input (.. % -target -value))}]]
+       [:div
+        [:p
+         (str "expresion: "
+              (try
+                (reducir (:input @state))
+                (catch :default e
+                  e)))]]])))
 
 (defn mount-app-element []
   (when-let [el (gdom/getElement "app")]
