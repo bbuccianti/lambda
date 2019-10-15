@@ -36,10 +36,10 @@
                 (reducir (:input @state))
                 (catch :default e e)))]]])))
 
-(defn mount-app-element []
+(defn mount-app-element [] 
   (when-let [el (gdom/getElement "app")]
     (r/render-component [app] el)
     (.. (gdom/getElement "input") focus)))
 
-(defn on-js-reload []
+(defn on-js-reload [] 
   (mount-app-element))

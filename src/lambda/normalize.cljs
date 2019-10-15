@@ -65,9 +65,8 @@
                          [(first lexed)]
                          [(second lexed)]
                          [cierra]
-                         (nthrest lexed 2)                                            
-                         )
-                         ))
+                         (nthrest lexed 2)                                         
+                         )))
           )
         
         (and (= (:tipo (first lexed)) :ident)
@@ -107,20 +106,21 @@
                                  (rest sobra)))))
 
                 (= (:tipo (first sobra)) :abre-p)
-                (let [corte2 (next-close-var (rest lexed) 0 0)
+                (let [corte2 (next-close-var (rest sobra) 0 0)
                       sobra2 (nthrest (rest sobra) (+ 1 corte2))]
-                  (if (nil? (second sobra2))
+                  (if (nil? (first sobra2))
                     (into [] (concat [abre]
                                      (group-ident (take corte (rest lexed)))
                                      (group-ident (take corte2 (rest sobra)))
-                                     [cierra]))
+                                     [cierra];;[cierra]
+                                     ))
                     (group-ident
                      (into []
                            (concat [abre]
                                    (group-ident (take corte (rest lexed)))
                                    (group-ident (take corte2 (rest sobra)))
                                    [cierra]
-                                   (rest sobra2))))))
+                                   sobra2)))))
 
                 true
                 lexed)
