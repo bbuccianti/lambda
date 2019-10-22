@@ -5,11 +5,13 @@
    [reagent.core :as r]
    [lambda.lexer :as l]
    [lambda.parser :as p]
-   [lambda.reducer :as red]))
+   [lambda.reducer :as red]
+   [lambda.normalize :as n]))
 
 (defn reducir [input]
   (->> input
        l/lex
+       n/restore
        p/parse
        red/reduce))
 
