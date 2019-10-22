@@ -5,6 +5,7 @@
    [lambda.parser-test]
    [lambda.reducer-test]
    [lambda.normalize-test]
+   [lambda.stringy-test]
    [pjstadig.humane-test-output]
    [cljs.test :refer-macros [run-tests]]))
 
@@ -14,5 +15,5 @@
    'lambda.lexer-test
    'lambda.parser-test
    'lambda.reducer-test
-   'lambda.normalize-test))
+   'lambda.stringy-test))
 
