@@ -46,4 +46,10 @@
                                                             :opndo {:var "x"}}}}}}}
                     :opndo {:var "a"}}}
            :opndo {:var "b"}}}
-         (p/parse (l/lex "(((λx.(λy.(y x))) a) b)")))))
+         (p/parse (l/lex "(((λx.(λy.(y x))) a) b)"))))
+  (is (= {:apli
+          {:opdor {:var "x"}
+           :opndo {:abst {:param {:var "x"}
+                          :cuerpo {:apli {:opdor {:var "y"}
+                                          :opndo {:var "y"}}}}}}}
+         (p/parse (l/lex "(x (λx.(y y)))")))))

@@ -14,6 +14,7 @@
    'lambda.core-test
    'lambda.lexer-test
    'lambda.parser-test
+   'lambda.normalize-test
    'lambda.reducer-test
    'lambda.stringy-test))
 

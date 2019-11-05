@@ -12,4 +12,8 @@
 
 (deftest abst
   (is (= "(x (λx.(y y)))"
-         (toString (parse (lex "(x (λx.(y y)))"))))))
+         (toString (reducir "(x (λx.(y y)))"))))
+  (is (= "((λx.((y y) x)) x)"
+         (toString (parse (lex "(((λx.(y y) x)) x)")))))
+  (is (= "((λy.(x x)) (λx.(y y)))"
+         (toString (parse (lex "((λy.(x x)) (λx.(y y)))"))))))
