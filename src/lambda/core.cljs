@@ -6,14 +6,16 @@
    [lambda.lexer :as l]
    [lambda.parser :as p]
    [lambda.reducer :as red]
-   [lambda.normalize :as n]))
+   [lambda.normalize :as n]
+   [lambda.stringy :as s]))
 
 (defn reducir [input]
   (->> input
        l/lex
        n/restore
        p/parse
-       red/reduce))
+       red/reduce
+       s/toString))
 
 (defn app []
   (let [state (r/atom {:input ""})]
@@ -34,14 +36,15 @@
           #(swap! state assoc :input (.. % -target -value))}]]
        [:div.container.mx-auto.py-3
         [:p
+         {:style {:font-size "80px"}}
          (str (try
                 (reducir (:input @state))
                 (catch :default e e)))]]])))
 
-(defn mount-app-element [] 
+(defn mount-app-element []
   (when-let [el (gdom/getElement "app")]
     (r/render-component [app] el)
     (.. (gdom/getElement "input") focus)))
 
-(defn on-js-reload [] 
+(defn on-js-reload []
   (mount-app-element))

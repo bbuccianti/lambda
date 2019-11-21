@@ -1,6 +1,4 @@
-(ns lambda.parser
-  (:require
-   [lambda.normalize :refer [next-close-var]]))
+(ns lambda.parser)
 
 (defn- find-next [t v]
   (->> (map-indexed vector v)
@@ -36,21 +34,16 @@
         :cuerpo (transform (subvec v (inc punto)))}})
 
     (= (first v) :abre-p)
-    (if (or (= 5 (count v)) (= 4 (count v)))
-      {:apli {:opdor (nth v 1)
-              :opndo (nth v 2)}}
-      (if (map? (second v))
-        (let [c (find-matching-close v)]
+    (if (and (>= 3 (count v)) (<= (count v) 5))
+      {:apli {:opdor (nth v 1) :opndo (nth v 2)}}
+
+      (let [c (find-matching-close v)]
+        (if (map? (second v))
           {:apli {:opdor (nth v 1)
-                  :opndo (transform (subvec v 2 c))}})
-        
-        (let [c (find-matching-close v)]
-          (println v)
+                  :opndo (transform (subvec v 2 c))}}
+
           {:apli {:opdor (transform (subvec v 1 c))
-                  :opndo (transform (subvec v (inc c)))}})
-        )
-      )
-    
+                  :opndo (transform (subvec v (inc c)))}})))
 
      :else (first v)))
 

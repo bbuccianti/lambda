@@ -1,7 +1,6 @@
 (ns lambda.stringy)
 
 (defn- transform [m]
-  (println m)
   (cond
     (find m :abst)
     (let [abst (:abst m)]
@@ -10,7 +9,7 @@
 
     (find m :apli)
     (let [apli (:apli m)]
-      (str "("(transform (:opdor apli))
+      (str "(" (transform (:opdor apli))
            " " (transform (:opndo apli)) ")"))
 
     (find m :var)
