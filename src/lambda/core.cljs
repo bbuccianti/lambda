@@ -1,7 +1,6 @@
 (ns lambda.core
   (:require
    [goog.dom :as gdom]
-   [clojure.string :as string]
    [reagent.core :as r]
    [lambda.lexer :as l]
    [lambda.parser :as p]
@@ -43,10 +42,12 @@
 
 (defn mount-app []
   (when-let [el (gdom/getElement "app")]
-    (r/render-component [app] el)
-    (.. (gdom/getElement "input") focus)))
+    (r/render-component [app] el)))
 
 (defn on-js-reload []
   (mount-app))
 
-#_(mount-app)
+(defn ^:export main []
+  (mount-app))
+
+

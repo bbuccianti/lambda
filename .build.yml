@@ -1,0 +1,23 @@
+image: archlinux
+packages:
+  - nodejs
+  - leiningen
+  - rsync
+sources:
+  - https://git.sr.ht/~bbuccianti/lambda
+environment:
+  deploy: deploy@buccianti.dev
+secrets:
+  - ffb1b60b-9c71-498c-9ba5-b8108512c1b8
+tasks:
+  - run-tests: |
+      cd lambda
+      lein kaocha --no-watch
+  - build: |
+      cd lambda
+      lein do clean, cljsbuild once min
+  - deploy: |
+      cd lambda
+      sshopts="-o StrictHostKeyChecking=no -p 12345 -i ~/.ssh/id_rsa"
+      rsync -e "ssh $sshopts" -rP resources/ ${deploy}:lambda.buccianti.dev/
+      ssh $sshopts ${deploy} '~/deploy.sh lambda.buccianti.dev'

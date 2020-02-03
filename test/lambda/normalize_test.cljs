@@ -1,6 +1,6 @@
 (ns lambda.normalize-test
   (:require
-   [cljs.test :refer-macros [deftest is testing]]
+   [cljs.test :refer [deftest is]]
    [lambda.normalize :as n]
    [lambda.lexer :as l]))
 

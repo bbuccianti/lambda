@@ -1,6 +1,6 @@
 (ns lambda.parser-test
   (:require
-   [cljs.test :refer-macros [deftest is testing]]
+   [cljs.test :refer [deftest is]]
    [lambda.lexer :as l]
    [lambda.parser :as p]))
 

@@ -1,6 +1,6 @@
 (ns lambda.reducer-test
   (:require
-   [cljs.test :refer-macros [deftest is]]
+   [cljs.test :refer [deftest is]]
    [lambda.lexer :as l]
    [lambda.parser :as p]
    [lambda.reducer :as r]))

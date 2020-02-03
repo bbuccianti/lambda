@@ -1,6 +1,6 @@
 (ns lambda.lexer-test
   (:require
-   [cljs.test :refer-macros [deftest is]]
+   [cljs.test :refer [deftest is]]
    [lambda.lexer :as l]))
 
 (deftest tokens

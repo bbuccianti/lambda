@@ -1,6 +1,6 @@
 (ns lambda.stringy-test
   (:require
-   [cljs.test :refer-macros [deftest is testing]]
+   [cljs.test :refer [deftest is]]
    [lambda.stringy :refer [toString]]
    [lambda.parser :refer [parse]]
    [lambda.lexer :refer [lex]]
