@@ -4,13 +4,8 @@
    [cljs.test :refer-macros [deftest is testing]]
    [lambda.core :as rl]))
 
-(deftest vars
 ;  (is (= "a" (rl/reducir "a")))
-  )
-
-(deftest abstracciones-de-cuerpo-variable
 ; (is (= "y" (rl/reducir "(λx.x) y")))
-  )
 
 ;; TODO
 ;; pasar variable a la identidad => la misma variable

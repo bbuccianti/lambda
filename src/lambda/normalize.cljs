@@ -7,6 +7,7 @@
 (def lamb {:tipo :lambda :string "λ"})
 (def point {:tipo :punto :string "."})
 
+(declare restore-abstr)
 
 (defn restore-lambda [lexed]
   (cond (= (first lexed) nil)
@@ -48,8 +49,8 @@
         (= (:tipo (first lexed)) :lambda)
         (into [] (concat [abre]
                          (restore-abstr lexed)
-                         [cierra]))       
-        
+                         [cierra]))
+
         (= (:tipo (first lexed))
            (:tipo (second lexed))
            :ident)
@@ -65,10 +66,10 @@
                          [(first lexed)]
                          [(second lexed)]
                          [cierra]
-                         (nthrest lexed 2)                                         
+                         (nthrest lexed 2)
                          )))
           )
-        
+
         (and (= (:tipo (first lexed)) :ident)
              (= (:tipo (second lexed)) :abre-p))
         (let [corte (next-close-var (nthrest lexed 2) 0 0)
@@ -147,17 +148,17 @@
               (into [] (concat [(first lexed)]
                                    (restore-abstr (rest lexed))))
 
-              (= (:tipo (second lexed)) :lambda)              
+              (= (:tipo (second lexed)) :lambda)
               (into [] (concat [(first lexed)] (restore-abstr (rest lexed))))
-              
-              true              
+
+              true
               (let [corte (next-close-var (rest lexed) 0 0)]
                 (into [] (concat [(first lexed)]
                                  (group-ident (take corte (rest lexed)))
                                  (restore-abstr (nthrest (rest lexed) corte))))))
         true
         (into [] (concat [(first lexed)] (restore-abstr (rest lexed))))
-        
+
    ))
 
 
@@ -170,7 +171,7 @@
           (into [] (concat [(first lexed)]
                            [(second lexed)]
                            (restore-exp (nthrest lexed 2))))
-          (into [] (concat [(first lexed)] (restore-exp (rest lexed)))))        
+          (into [] (concat [(first lexed)] (restore-exp (rest lexed)))))
 
         (= (:tipo (first lexed)) :lambda)
         (let [corte (next-close-var lexed 0 0)]
@@ -179,7 +180,7 @@
                            (restore-exp (take corte (rest lexed)))
                            [cierra]
                            (restore-exp (nthrest (rest lexed) corte)))))
-        
+
         true
         (into [] (concat [(first lexed)] (restore-exp (rest lexed))))
          ))

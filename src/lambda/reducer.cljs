@@ -15,7 +15,7 @@
       (replace-param (:param (:abst opdor)) (:cuerpo (:abst opdor)) opndo)
       {:apli m})))
 
-(defn reduce [m]
+(defn reduct [m]
   (cond
     (find m :apli)
     (transform (:apli m))
