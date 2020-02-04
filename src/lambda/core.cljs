@@ -16,6 +16,16 @@
        red/reduct
        s/toString))
 
+(defn handle-key-press [e in]
+  (let [input (gdom/getElement "input")
+        idx (.-selectionStart input)
+        left (subs @in 0 idx)
+        right (subs @in idx)]
+    (when (= "\\" (.-key e))
+      (.preventDefault e)
+      (reset! in (str left "λ" right))
+      (js/setTimeout #(.setSelectionRange input (inc idx) (inc idx)) 25))))
+
 (defn app []
   (let [in (r/atom "")]
     (fn []
@@ -26,10 +36,7 @@
         [:input.w-100.text-center.border-0
          {:id "input"
           :value @in
-          :on-key-press (fn [e]
-                          (when (= "\\" (.-key e))
-                            (.preventDefault e)
-                            (reset! in (str @in "λ"))))
+          :onKeyPress #(handle-key-press % in)
           :onChange #(reset! in (.. % -target -value))}]]
        [:div.container.mx-auto.py-3
         [:p
@@ -46,6 +53,6 @@
   (mount-app))
 
 (defn ^:export main []
-  (mount-app))
+  (on-js-reload))
 
 
