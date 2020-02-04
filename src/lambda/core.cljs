@@ -17,7 +17,7 @@
        s/toString))
 
 (defn app []
-  (let [state (r/atom {:input ""})]
+  (let [in (r/atom "")]
     (fn []
       [:div
        [:div.container.mx-auto.py-3
@@ -25,19 +25,17 @@
                  :border-bottom "solid 3px #000"}}
         [:input.w-100.text-center.border-0
          {:id "input"
-          :value (:input @state)
-          :on-key-press
-          (fn [e]
-            (when (= "\\" (.-key e))
-              (.preventDefault e)
-              (swap! state assoc :input (str (:input @state) "λ"))))
-          :on-change
-          #(swap! state assoc :input (.. % -target -value))}]]
+          :value @in
+          :on-key-press (fn [e]
+                          (when (= "\\" (.-key e))
+                            (.preventDefault e)
+                            (reset! in (str @in "λ"))))
+          :onChange #(reset! in (.. % -target -value))}]]
        [:div.container.mx-auto.py-3
         [:p
          {:style {:font-size "80px"}}
          (str (try
-                (reducir (:input @state))
+                (reducir @in)
                 (catch :default e e)))]]])))
 
 (defn mount-app []
