@@ -2,7 +2,8 @@
   (:require
    [cljs.test :refer [deftest is]]
    [lambda.lexer :as l]
-   [lambda.parser :as p]))
+   [lambda.parser :as p]
+   [lambda.normalize :refer [restore]]))
 
 (deftest variables
   (is (= {:var "x"}
@@ -60,4 +61,14 @@
                                                    :opndo {:var "y"}}}
                                           :opndo {:var "x"}}}}}
            :opndo {:var "z"}}}
-         (p/parse (l/lex "((λx.((y y) x)) z)")))))
+         (p/parse (l/lex "((λx.((y y) x)) z)"))))
+  (is (= {:apli
+          {:opdor {:abst
+                   {:param {:var "x"}
+                    :cuerpo {:apli {:opdor {:apli {:opdor {:var "x"}
+                                                   :opndo {:var "y"}}}
+                                    :opndo {:var "x"}}}}}
+           :opndo {:var "z"}}}
+         (p/parse (l/lex "((λx.((x y) x)) z)"))))
+  (is (= (p/parse (l/lex "((λx.((x y) x)) z)"))
+         (p/parse (restore (l/lex "(λx.(x y x)) z"))))))
