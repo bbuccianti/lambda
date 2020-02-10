@@ -13,3 +13,4 @@ pom.xml
 .nrepl-port
 /.cljs_node_repl/
 /package-lock.json
+/node_modules/

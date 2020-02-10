@@ -1,6 +1,7 @@
 image: archlinux
 packages:
   - nodejs
+  - npm
   - leiningen
   - rsync
 sources:
@@ -12,6 +13,7 @@ secrets:
 tasks:
   - run-tests: |
       cd lambda
+      npm i ws
       lein kaocha --no-watch
   - build: |
       cd lambda
