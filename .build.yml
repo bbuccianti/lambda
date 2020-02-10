@@ -20,6 +20,6 @@ tasks:
       lein do clean, cljsbuild once min
   - deploy: |
       cd lambda
-      sshopts="-o StrictHostKeyChecking=no -p 12345 -i ~/.ssh/id_rsa"
+      sshopts="-o StrictHostKeyChecking=no -p 12345"
       rsync -e "ssh $sshopts" -rP resources/ ${deploy}:lambda.buccianti.dev/
       ssh $sshopts ${deploy} '~/deploy.sh lambda.buccianti.dev'
