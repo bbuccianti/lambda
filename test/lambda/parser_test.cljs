@@ -1,31 +1,31 @@
 (ns lambda.parser-test
   (:require
    [cljs.test :refer [deftest is]]
-   [lambda.lexer :as l]
-   [lambda.parser :as p]
+   [lambda.lexer :refer [lex]]
+   [lambda.parser :refer [parse]]
    [lambda.normalize :refer [restore]]))
 
 (deftest variables
   (is (= {:var "x"}
-         (p/parse (l/lex "x")))))
+         (-> "x" lex parse))))
 
 (deftest aplicacion
   (is (= {:apli {:opdor {:var "x"}
                  :opndo {:var "x"}}}
-         (p/parse (l/lex "(x x)"))))
+         (-> "(x x)" lex parse)))
   (is (= {:apli
           {:opdor {:abst
                    {:param {:var "y"}
                     :cuerpo {:apli {:opdor {:var "y"}
                                     :opndo {:var "x"}}}}}
            :opndo {:var "a"}}}
-         (p/parse (l/lex "((λy.(y x)) a)")))))
+         (-> "((λy.(y x)) a)" lex parse))))
 
 (deftest abstraccion
   (is (= {:abst {:param {:var "x"}
                  :cuerpo {:apli {:opdor {:var "x"}
                                  :opndo {:var "x"}}}}}
-         (p/parse (l/lex "(λx.(x x))")))))
+         (-> "(λx.(x x))" lex parse))))
 
 (deftest expresiones
   (is (= {:apli
@@ -37,7 +37,7 @@
                                    :cuerpo {:apli {:opdor {:var "y"}
                                                    :opndo {:var "y"}}}}}}}
            :opndo {:var "z"}}}
-         (p/parse (l/lex "(((λx.(x y)) (λy.(y y))) z)"))))
+         (-> "(((λx.(x y)) (λy.(y y))) z)" lex parse)))
   (is (= {:apli
           {:opdor {:apli
                    {:opdor
@@ -47,13 +47,13 @@
                                                             :opndo {:var "x"}}}}}}}
                     :opndo {:var "a"}}}
            :opndo {:var "b"}}}
-         (p/parse (l/lex "(((λx.(λy.(y x))) a) b)"))))
+         (-> "(((λx.(λy.(y x))) a) b)" lex parse)))
   (is (= {:apli
           {:opdor {:var "x"}
            :opndo {:abst {:param {:var "x"}
                           :cuerpo {:apli {:opdor {:var "y"}
                                           :opndo {:var "y"}}}}}}}
-         (p/parse (l/lex "(x (λx.(y y)))"))))
+         (-> "(x (λx.(y y)))" lex parse)))
   (is (= {:apli
           {:opdor {:abst {:param {:var "x"}
                           :cuerpo {:apli {:opdor {:apli
@@ -61,7 +61,7 @@
                                                    :opndo {:var "y"}}}
                                           :opndo {:var "x"}}}}}
            :opndo {:var "z"}}}
-         (p/parse (l/lex "((λx.((y y) x)) z)"))))
+         (-> "((λx.((y y) x)) z)" lex parse)))
   (is (= {:apli
           {:opdor {:abst
                    {:param {:var "x"}
@@ -69,6 +69,7 @@
                                                    :opndo {:var "y"}}}
                                     :opndo {:var "x"}}}}}
            :opndo {:var "z"}}}
-         (p/parse (l/lex "((λx.((x y) x)) z)"))))
-  (is (= (p/parse (l/lex "((λx.((x y) x)) z)"))
-         (p/parse (restore (l/lex "(λx.(x y x)) z"))))))
+         (-> "((λx.((x y) x)) z)" lex parse)))
+
+  (is (= (-> "((λx.((x y) x)) z)" lex parse)
+         (-> "(λx.(x y x)) z" lex restore parse))))
