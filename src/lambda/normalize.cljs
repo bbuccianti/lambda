@@ -133,20 +133,28 @@
         nil
 
         (= (:tipo (first lexed)) :punto)
-        (cond (and (= (:tipo (second lexed))
+        (cond
+          (and (= (:tipo (second lexed))
                       :ident)
                    (or (= (:tipo (first (nthrest lexed 2))):cierra-p)
                        (nil? (first (nthrest lexed 2))))
                    )
               (into [] (concat [(first lexed)] (restore-abstr (rest lexed))))
 
-              (and (= (:tipo (second lexed)) :abre-p)
-                   (let [corte (next-close-var (nthrest lexed 2) 0 0)
-                         sobra (nthrest (nthrest lexed 2) (+ 1 corte))]
-                     (or (= (:tipo (first sobra)) :cierra-p)
-                         (nil? (first sobra)))))
-              (into [] (concat [(first lexed)]
-                                   (restore-abstr (rest lexed))))
+              (= (:tipo (second lexed)) :abre-p)
+              (let [corte (next-close-var (nthrest lexed 2) 0 0)
+                    sobra (nthrest (nthrest lexed 2) (+ 1 corte))]
+                (if (or (= (:tipo (first sobra)) :cierra-p) (nil? (first sobra)))
+                  (into [] (concat [(first lexed)]
+                                   (group-ident (take corte (nthrest lexed 2)))
+                                   (restore-abstr sobra)))
+                  (into [] (concat [(first lexed)]
+                                   [abre]
+                                   (group-ident (take corte (nthrest lexed 2)))
+                                   (restore-abstr sobra)
+                                   [cierra]))))
+                
+              
 
               (= (:tipo (second lexed)) :lambda)
               (into [] (concat [(first lexed)] (restore-abstr (rest lexed))))
