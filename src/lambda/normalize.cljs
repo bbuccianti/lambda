@@ -153,8 +153,8 @@
                                    (group-ident (take corte (nthrest lexed 2)))
                                    (restore-abstr sobra)
                                    [cierra]))))
-                
-              
+
+
 
               (= (:tipo (second lexed)) :lambda)
               (into [] (concat [(first lexed)] (restore-abstr (rest lexed))))
@@ -195,7 +195,3 @@
 
 (defn restore[lexed]
   (group-ident (restore-abstr (restore-exp (restore-lambda lexed)))))
-
-;; (use 'figwheel-sidecar.repl-api)
-;; (start-figwheel!)
-;; (cljs-repl)
