@@ -1,21 +1,18 @@
 (ns lambda.stringy)
 
-(defn- transform [m]
+(defn toString [m]
   (cond
-    (find m :abst)
+    (contains? m :abst)
     (let [abst (:abst m)]
-      (str "(λ" (transform (:param abst)) "."
-           (transform (:cuerpo abst)) ")"))
+      (str "(λ" (toString (:param abst)) "."
+           (toString (:cuerpo abst)) ")"))
 
-    (find m :apli)
+    (contains? m :apli)
     (let [apli (:apli m)]
-      (str "(" (transform (:opdor apli))
-           " " (transform (:opndo apli)) ")"))
+      (str "(" (toString (:opdor apli))
+           " " (toString (:opndo apli)) ")"))
 
-    (find m :var)
+    (contains? m :var)
     (:var m)
 
     :else m))
-
-(defn toString [m]
-  (transform m))
