@@ -11,16 +11,16 @@
 
 (defn- transform [m]
   (let [{:keys [opdor opndo]} m]
-    (if (find opdor :abst)
+    (if (contains? opdor :abst)
       (replace-param (:param (:abst opdor)) (:cuerpo (:abst opdor)) opndo)
       {:apli m})))
 
 (defn reduct [m]
   (cond
-    (find m :apli)
+    (contains? m :apli)
     (transform (:apli m))
 
-    (find m :opdor)
+    (contains? m :opdor)
     (transform m)
 
     :else m))
