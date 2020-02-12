@@ -1,39 +1,24 @@
 (ns lambda.reducer-test
   (:require
-   [cljs.test :refer [deftest is]]
-   [lambda.lexer :as l]
-   [lambda.parser :as p]
-   [lambda.reducer :as r]))
+   [cljs.test :refer [deftest is are]]
+   [lambda.lexer :refer [lex]]
+   [lambda.parser :refer [parse]]
+   [lambda.reducer :refer [reduct]]))
 
 (deftest vars
-  (is (= {:var "x"}
-         (r/reduct (p/parse (l/lex "x")))))
-  (is (= {:apli
-          {:opdor {:var "x"}
-           :opndo {:var "x"}}}
-         (r/reduct (p/parse (l/lex "(x x)"))))))
+  (is (= {:var "x"} (-> "x" lex parse reduct)))
+  (is (= {:apli {:opdor {:var "x"} :opndo {:var "x"}}}
+         (-> "(x x)" lex parse reduct))))
 
 (deftest aplicacion
-  (is (= {:apli
-          {:opdor {:var "a"}
-           :opndo {:var "a"}}}
-         (r/reduct (p/parse (l/lex "((λy.(y y)) a)")))))
-  (is (= {:apli
-          {:opdor {:var "a"}
-           :opndo {:var "x"}}}
-         (r/reduct (p/parse (l/lex "((λy.(y x)) a)")))))
-  (is (= {:apli
-          {:opdor {:var "x"}
-           :opndo {:var "a"}}}
-         (r/reduct (p/parse (l/lex "((λy.(x y)) a)"))))))
+  (is (= {:apli {:opdor {:var "a"} :opndo {:var "a"}}}
+         (-> "((λy.(y y)) a)" lex parse reduct)))
+  (is (= {:apli {:opdor {:var "a"} :opndo {:var "x"}}}
+         (-> "((λy.(y x)) a)" lex parse reduct)))
+  (is (= {:apli {:opdor {:var "x"} :opndo {:var "a"}}}
+         (-> "((λy.(x y)) a)" lex parse reduct))))
 
 (deftest expresion
-  (is (= {:apli
-          {:opdor {:apli
-                   {:opdor {:var "a"}
-                    :opndo {:var "a"}}}
-           :opndo {:apli
-                   {:opdor {:var "a"}
-                    :opndo {:var "a"}}}}}
-         (r/reduct (p/parse (l/lex "((λx.(x x)) (a a))"))))))
+  (are [exp act] (= (-> exp lex parse) (-> act lex parse reduct))
+    "((a a) (a a))" "((λx.(x x)) (a a))"))
 
