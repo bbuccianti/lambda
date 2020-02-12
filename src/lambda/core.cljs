@@ -2,19 +2,14 @@
   (:require
    [goog.dom :as gdom]
    [reagent.core :as r]
-   [lambda.lexer :as l]
-   [lambda.parser :as p]
-   [lambda.reducer :as red]
-   [lambda.normalize :as n]
-   [lambda.stringy :as s]))
+   [lambda.lexer :refer [lex]]
+   [lambda.normalize :refer [restore]]
+   [lambda.parser :refer [parse]]
+   [lambda.reducer :refer [reduct]]
+   [lambda.stringy :refer [toString]]))
 
 (defn reducir [input]
-  (->> input
-       l/lex
-       n/restore
-       p/parse
-       red/reduct
-       s/toString))
+  (->> input lex restore parse reduct toString))
 
 (defn handle-key-press [e in]
   (let [input (gdom/getElement "input")
