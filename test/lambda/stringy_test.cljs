@@ -2,12 +2,11 @@
   (:require
    [cljs.test :refer [deftest is are]]
    [lambda.stringy :refer [toString]]
-   [lambda.parser :refer [parse]]
    [lambda.lexer :refer [lex]]
-   [lambda.core :refer [reducir]]))
+   [lambda.parser :refer [parse]]))
 
 (deftest vars
-  (is (= "(x x)" (toString (reducir "(x x)")))))
+  (is (= "(x x)" (-> "(x x)" lex parse toString))))
 
 (deftest abst
   (are [exp act] (= exp (-> act lex parse toString))

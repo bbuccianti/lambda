@@ -2,43 +2,16 @@
   (:require
    [goog.dom :as gdom]
    [reagent.core :as r]
-   [lambda.lexer :refer [lex]]
-   [lambda.normalize :refer [restore]]
-   [lambda.parser :refer [parse]]
-   [lambda.reducer :refer [reduct]]
-   [lambda.stringy :refer [toString]]))
-
-(defn reducir [input]
-  (->> input lex restore parse reduct toString))
-
-(defn handle-key-press [e in]
-  (let [input (gdom/getElement "input")
-        idx (.-selectionStart input)
-        left (subs @in 0 idx)
-        right (subs @in idx)]
-    (when (= "\\" (.-key e))
-      (.preventDefault e)
-      (reset! in (str left "λ" right))
-      (js/setTimeout #(.setSelectionRange input (inc idx) (inc idx)) 25))))
+   [lambda.semantic :as ui]
+   [lambda.components.input :refer [readline]]
+   [lambda.components.output :refer [results]]))
 
 (defn app []
   (let [in (r/atom "")]
     (fn []
-      [:div
-       [:div.container.mx-auto.py-3
-        {:style {:font-size "48px"
-                 :border-bottom "solid 3px #000"}}
-        [:input.w-100.text-center.border-0
-         {:id "input"
-          :value @in
-          :onKeyPress #(handle-key-press % in)
-          :onChange #(reset! in (.. % -target -value))}]]
-       [:div.container.mx-auto.py-3
-        [:p
-         {:style {:font-size "80px"}}
-         (str (try
-                (reducir @in)
-                (catch :default e e)))]]])))
+      [:> ui/container
+       [readline in]
+       [results]])))
 
 (defn mount-app []
   (when-let [el (gdom/getElement "app")]
@@ -49,5 +22,3 @@
 
 (defn ^:export main []
   (on-js-reload))
-
-

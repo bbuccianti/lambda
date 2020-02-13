@@ -1,0 +1,7 @@
+(ns lambda.state
+  (:require
+   [reagent.core :as r]))
+
+(def outputs (r/atom []))
+(def history (r/atom []))
+(def index (r/atom 0))
