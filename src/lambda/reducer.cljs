@@ -12,9 +12,13 @@
                (get-in opdor [:abst :cuerpo]))
       {:apli m})))
 
-(defn reduct [m]
+(defn- keep-reducing [m]
   (postwalk (fn [target]
               (if (contains? target :apli)
                 (transform (:apli target))
                 target))
             m))
+
+(defn reduct [m]
+  ;; TODO: fix 10 for managing infinite recursion
+  (last (take 10 (iterate keep-reducing m))))
