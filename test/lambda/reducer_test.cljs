@@ -2,6 +2,7 @@
   (:require
    [cljs.test :refer [deftest is are]]
    [lambda.lexer :refer [lex]]
+   [lambda.normalize :refer [restore]]
    [lambda.parser :refer [parse]]
    [lambda.reducer :refer [reduct]]))
 
@@ -19,6 +20,8 @@
          (-> "((λy.(x y)) a)" lex parse reduct))))
 
 (deftest expresion
-  (are [exp act] (= (-> exp lex parse) (-> act lex parse reduct))
-    "((a a) (a a))" "((λx.(x x)) (a a))"))
+  (are [exp act] (= (-> exp lex restore parse)
+                    (-> act lex restore parse reduct))
+    "((a a) (a a))" "(λx.x x) (a a)"
+    "z y z" "(λx.x y x) z"))
 
