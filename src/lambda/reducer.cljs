@@ -1,6 +1,6 @@
 (ns lambda.reducer
   (:require
-   [clojure.walk :refer [prewalk-replace prewalk]]))
+   [clojure.walk :refer [prewalk postwalk]]))
 
 (defn- transform [m]
   (let [{:keys [opdor opndo]} m]
@@ -13,11 +13,8 @@
       {:apli m})))
 
 (defn reduct [m]
-  (cond
-    (contains? m :apli)
-    (transform (:apli m))
-
-    (contains? m :opdor)
-    (transform m)
-
-    :else m))
+  (postwalk (fn [target]
+              (if (contains? target :apli)
+                (transform (:apli target))
+                target))
+            m))

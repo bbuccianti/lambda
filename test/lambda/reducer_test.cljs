@@ -23,5 +23,6 @@
   (are [exp act] (= (-> exp lex restore parse)
                     (-> act lex restore parse reduct))
     "((a a) (a a))" "(λx.x x) (a a)"
-    "z y z" "(λx.x y x) z"))
+    "z y z" "(λx.x y x) z"
+    "z a z" "(λx y. x y x) z a"))
 
