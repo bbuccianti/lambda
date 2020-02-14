@@ -1,9 +1,10 @@
 image: archlinux
 packages:
+  - curl
   - nodejs
   - npm
-  - leiningen
   - rsync
+  - jre10-openjdk-headless
 sources:
   - https://git.sr.ht/~bbuccianti/lambda
 environment:
@@ -11,13 +12,17 @@ environment:
 secrets:
   - ffb1b60b-9c71-498c-9ba5-b8108512c1b8
 tasks:
+  - setup: |
+      cd lambda
+      curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+      chmod +x lein
   - run-tests: |
       cd lambda
       npm i ws
-      lein kaocha --no-watch
+      ./lein kaocha
   - build: |
       cd lambda
-      lein do clean, cljsbuild once min
+      ./lein do clean, cljsbuild once min
   - deploy: |
       cd lambda
       sshopts="-o StrictHostKeyChecking=no -p 12345"
