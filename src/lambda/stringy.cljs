@@ -9,8 +9,7 @@
 
     (contains? m :apli)
     (let [apli (:apli m)]
-      (str "(" (toString (:opdor apli))
-           " " (toString (:opndo apli)) ")"))
+      (str (toString (:opdor apli)) " " (toString (:opndo apli))))
 
     (contains? m :var)
     (:var m)
