@@ -22,7 +22,7 @@
 
 (defn- match [item]
   (case (:tipo item)
-    :ident {:var (:string item) :index 0}
+    :ident {:var (:string item)}
     (:tipo item)))
 
 (defn- transform [v]

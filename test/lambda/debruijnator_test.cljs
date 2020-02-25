@@ -30,6 +30,6 @@
       {:var "x" :index 1}
      :cuerpo
       {:apli {:opdor {:var "x" :index 1}
-              :opndo {:var "y" :index 0}}}}}
+              :opndo {:var "y"}}}}}
     "λx.x y"
     ))

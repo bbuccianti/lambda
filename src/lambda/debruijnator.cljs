@@ -8,10 +8,10 @@
         var (get-in exp  [:param :var])]
     {:abst
      {:param
-      (assoc param :index 1)
+      (assoc param :index index)
      :cuerpo
      (prewalk (fn [target]
-                (if (and (contains? target :index)
+                (if (and (contains? target :var)
                          (= (target :var) var))
                   (assoc target :index index)
                   target))
