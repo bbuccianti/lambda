@@ -12,15 +12,18 @@
 (defn reducir [input]
   (->> input lex restore parse reduct toString))
 
+(defn reset-and-restore [el s i]
+  (reset! state/command s)
+  (js/setTimeout #(.setSelectionRange el i i) 3))
+
 (defn handle-key-press [e]
-  (let [input (gdom/getElement "input")
-        idx (.-selectionStart input)
-        left (subs @state/command 0 idx)
-        right (subs @state/command idx)]
-    (when (= "\\" (.-key e))
+  (when (= "\\" (.-key e))
+    (let [input (gdom/getElement "input")
+          idx (.-selectionStart input)
+          left (subs @state/command 0 idx)
+          right (subs @state/command idx)]
       (.preventDefault e)
-      (reset! state/command (str left "λ" right))
-      (js/setTimeout #(.setSelectionRange input (inc idx) (inc idx)) 25))))
+      (reset-and-restore input (str left "λ" right) (inc idx)))))
 
 (defn handle-action []
   (let [new-input {:command @state/command
@@ -46,6 +49,11 @@
     "ArrowDown" (swap-history-and-input wrapped-inc)
     nil))
 
+(defn handle-on-change [e]
+  (let [input (gdom/getElement "input")
+        idx (.-selectionStart input)]
+    (reset-and-restore input (.. e -target -value) idx)))
+
 (defn readline []
   [:> ui/container
    {:style {:paddingTop "15px"}}
@@ -57,5 +65,5 @@
      :value @state/command
      :onKeyPress #(handle-key-press %)
      :onKeyUp #(handle-history-changes (.-key %))
-     :onChange #(reset! state/command (.. % -target -value))
+     :onChange handle-on-change
      :action {:content "Evaluar" :onClick handle-action}}]])
