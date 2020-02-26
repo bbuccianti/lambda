@@ -4,4 +4,5 @@
 
 (def outputs (r/atom []))
 (def history (r/atom []))
+(def command (r/atom ""))
 (def index (r/atom 0))

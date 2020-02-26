@@ -4,8 +4,13 @@
    [lambda.state :as state]))
 
 (defn results []
-  [:> ui/container
-   (when (< @state/index (count @state/outputs))
-     [:> ui/segment
-      {:size "huge"
-       :content (get @state/outputs @state/index)}])])
+  (when (< @state/index (count @state/outputs))
+    (let [cmd (get @state/outputs @state/index)]
+      [:> ui/container
+       {:style {:paddingTop "50px"}}
+       [:> ui/segment
+        {:size "huge"
+         :content (:command cmd)}]
+       [:> ui/segment
+        {:size "huge"
+         :content (:reduced cmd)}]])))

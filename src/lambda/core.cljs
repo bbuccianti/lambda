@@ -7,11 +7,10 @@
    [lambda.components.output :refer [results]]))
 
 (defn app []
-  (let [in (r/atom "")]
-    (fn []
-      [:> ui/container
-       [readline in]
-       [results]])))
+  (fn []
+    [:> ui/container
+     [readline]
+     [results]]))
 
 (defn mount-app []
   (when-let [el (gdom/getElement "app")]
