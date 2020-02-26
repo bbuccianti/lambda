@@ -16,20 +16,24 @@
   (reset! state/command s)
   (js/setTimeout #(.setSelectionRange el i i) 3))
 
-(defn handle-key-press [e]
-  (when (= "\\" (.-key e))
-    (let [input (gdom/getElement "input")
-          idx (.-selectionStart input)
-          left (subs @state/command 0 idx)
-          right (subs @state/command idx)]
-      (.preventDefault e)
-      (reset-and-restore input (str left "λ" right) (inc idx)))))
-
 (defn handle-action []
   (let [new-input {:command @state/command
                    :reduced (reducir @state/command)}]
     (swap! state/outputs conj new-input)
     (reset! state/index (dec (count @state/outputs)))))
+
+(defn handle-key-press [e]
+  (case (.-key e)
+    "\\" (let [input (gdom/getElement "input")
+               idx (.-selectionStart input)
+               left (subs @state/command 0 idx)
+               right (subs @state/command idx)]
+           (.preventDefault e)
+           (reset-and-restore input (str left "λ" right) (inc idx)))
+
+    "Enter" (handle-action)
+
+    nil))
 
 (defn wrapped-inc [n]
   (min (inc n) (count @state/outputs)))
