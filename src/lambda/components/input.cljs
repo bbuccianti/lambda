@@ -9,6 +9,9 @@
    [lambda.reducer :refer [reduct]]
    [lambda.stringy :refer [toString]]))
 
+(defn normalizar [input]
+  (-> input lex restore parse (toString :full)))
+
 (defn reducir [input]
   (->> input lex restore parse reduct toString))
 
@@ -18,6 +21,7 @@
 
 (defn handle-action []
   (let [new-input {:command @state/command
+                   :normalized (normalizar @state/command)
                    :reduced (reducir @state/command)}]
     (swap! state/outputs conj new-input)
     (reset! state/index (dec (count @state/outputs)))))

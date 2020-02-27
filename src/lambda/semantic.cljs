@@ -26,3 +26,4 @@
 (def message          (component "Message"))
 (def message-header   (component "Message" "Header"))
 (def message-content  (component "Message" "Content"))
+(def popup            (component "Popup"))
