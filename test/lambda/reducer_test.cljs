@@ -4,26 +4,22 @@
    [lambda.lexer :refer [lex]]
    [lambda.normalize :refer [restore]]
    [lambda.parser :refer [parse]]
-   [lambda.reducer :refer [reduct]]))
+   [lambda.reducer :refer [all-reductions]]))
 
 (deftest vars
-  (is (= {:var "x"} (-> "x" lex parse reduct)))
-  (is (= {:apli {:opdor {:var "x"} :opndo {:var "x"}}}
-         (-> "(x x)" lex parse reduct))))
-
-(deftest aplicacion
-  (is (= {:apli {:opdor {:var "a"} :opndo {:var "a"}}}
-         (-> "((λy.(y y)) a)" lex parse reduct)))
-  (is (= {:apli {:opdor {:var "a"} :opndo {:var "x"}}}
-         (-> "((λy.(y x)) a)" lex parse reduct)))
-  (is (= {:apli {:opdor {:var "x"} :opndo {:var "a"}}}
-         (-> "((λy.(x y)) a)" lex parse reduct))))
-
-(deftest expresion
   (are [exp act] (= (-> exp lex restore parse)
-                    (-> act lex restore parse reduct))
-    "((a a) (a a))" "(λx.x x) (a a)"
-    "z y z" "(λx.x y x) z"
-    "z a z" "(λx y. x y x) z a"
-    "a c" "(λx y. x y) (λz. z c) a"))
+                    (-> act lex restore parse all-reductions last))
+    "x" "x"
+    "(x x)" "x x"))
+
+(deftest aplicaciones
+  (are [exp act] (= (-> exp lex restore parse)
+                    (-> act lex restore parse all-reductions last))
+    "a a"              "(λy.y y) a"
+    "a x"              "(λy.y x) a"
+    "x a"              "(λy.x y) a"
+    "(a a) (a a)"      "(λx.x x) (a a)"
+    "z y z"            "(λx.x y x) z"
+    "z a z"            "(λx y. x y x) z a"
+    "a c"              "(λx y. x y) (λz. z c) a"))
 

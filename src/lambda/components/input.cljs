@@ -6,14 +6,14 @@
    [lambda.lexer :refer [lex]]
    [lambda.normalize :refer [restore]]
    [lambda.parser :refer [parse]]
-   [lambda.reducer :refer [reduct]]
+   [lambda.reducer :refer [all-reductions]]
    [lambda.stringy :refer [toString]]))
 
 (defn normalizar [input]
   (-> input lex restore parse (toString :full)))
 
-(defn reducir [input]
-  (->> input lex restore parse reduct toString))
+(defn get-reductions [input]
+  (-> input lex restore parse all-reductions))
 
 (defn reset-and-restore [el s i]
   (reset! state/command s)
@@ -21,8 +21,7 @@
 
 (defn handle-action []
   (let [new-input {:command @state/command
-                   :normalized (normalizar @state/command)
-                   :reduced (reducir @state/command)}]
+                   :reductions (get-reductions @state/command)}]
     (swap! state/outputs conj new-input)
     (reset! state/index (dec (count @state/outputs)))))
 
@@ -74,4 +73,10 @@
      :onKeyPress #(handle-key-press %)
      :onKeyUp #(handle-history-changes (.-key %))
      :onChange handle-on-change
-     :action {:content "Evaluar" :onClick handle-action}}]])
+     :action {:content "Evaluar" :onClick handle-action}}]
+   [:> ui/button
+    {:attach "bottom"
+     :content "Trace"
+     :compact true
+     :color (if (:trace? @state/config) "green" "red")
+     :onClick #(swap! state/config update :trace? not)}]])

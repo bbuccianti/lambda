@@ -4,7 +4,7 @@
    [reagent.core :as r]
    [lambda.state :as state]
    [lambda.semantic :as ui]
-   [lambda.state :as state]))
+   [lambda.stringy :refer [toString]]))
 
 (defn handle-copy [text]
   (let [input (gdom/getElement "input")
@@ -43,5 +43,8 @@
       [:> ui/container
        {:style {:paddingTop "50px"}}
        [make-segment (:command cmd)]
-       [make-segment (:normalized cmd)]
-       [make-segment (:reduced cmd)]])))
+       (if (:trace? @state/config)
+         (for [r (:reductions cmd)]
+           ^{:key (gensym "out")}
+           [make-segment (toString r)])
+         [make-segment (-> cmd :reductions last toString)])])))

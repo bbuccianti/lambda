@@ -19,6 +19,6 @@
                 target))
             m))
 
-(defn reduct [m]
+(defn all-reductions [m]
   ;; TODO: fix 10 for managing infinite recursion
-  (last (take 10 (iterate keep-reducing m))))
+  (distinct (take 10 (iterate keep-reducing m))))
