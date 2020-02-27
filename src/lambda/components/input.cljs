@@ -73,10 +73,20 @@
      :onKeyPress #(handle-key-press %)
      :onKeyUp #(handle-history-changes (.-key %))
      :onChange handle-on-change
-     :action {:content "Evaluar" :onClick handle-action}}]
+     :action {:content "Evaluar" :onClick handle-action}
+     :style {:margin-bottom "5px"}}]
    [:> ui/button
     {:attach "bottom"
      :content "Trace"
      :compact true
      :color (if (:trace? @state/config) "green" "red")
-     :onClick #(swap! state/config update :trace? not)}]])
+     :onClick #(swap! state/config update :trace? not)}]
+   [:> ui/button
+    {:attach "bottom"
+     :compact true
+     :content "Reportá el error!"
+     :color "blue"
+     :floated "right"
+     :as "a"
+     :target "_blank"
+     :href "https://todo.sr.ht/~bbuccianti/lambda"}]])
