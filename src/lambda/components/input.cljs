@@ -25,14 +25,17 @@
     (swap! state/outputs conj new-input)
     (reset! state/index (dec (count @state/outputs)))))
 
+(defn insert-lambda [e]
+  (let [input (gdom/getElement "input")
+        idx (.-selectionStart input)
+        left (subs @state/command 0 idx)
+        right (subs @state/command idx)]
+    (.preventDefault e)
+    (reset-and-restore input (str left "λ" right) (inc idx))))
+
 (defn handle-key-press [e]
   (case (.-key e)
-    "\\" (let [input (gdom/getElement "input")
-               idx (.-selectionStart input)
-               left (subs @state/command 0 idx)
-               right (subs @state/command idx)]
-           (.preventDefault e)
-           (reset-and-restore input (str left "λ" right) (inc idx)))
+    "\\" (insert-lambda e)
 
     "Enter" (handle-action)
 
@@ -66,7 +69,7 @@
    {:style {:paddingTop "15px"}}
    [:> ui/input
     {:id "input"
-     :placeholder "Insertá una expresión!"
+     :placeholder "Insertá una expresión lambda!"
      :fluid true
      :size "huge"
      :value @state/command
@@ -77,10 +80,11 @@
      :style {:margin-bottom "5px"}}]
    [:> ui/button
     {:attach "bottom"
-     :content "Trace"
+     :content "λ"
      :compact true
-     :color (if (:trace? @state/config) "green" "red")
-     :onClick #(swap! state/config update :trace? not)}]
+     :basic true
+     :floated "left"
+     :onClick insert-lambda}]
    [:> ui/button
     {:attach "bottom"
      :compact true
@@ -89,4 +93,11 @@
      :floated "right"
      :as "a"
      :target "_blank"
-     :href "https://todo.sr.ht/~bbuccianti/lambda"}]])
+     :href "https://todo.sr.ht/~bbuccianti/lambda"}]
+   [:> ui/button
+    {:attach "bottom"
+     :content "Trace"
+     :compact true
+     :floated "right"
+     :color (if (:trace? @state/config) "green" "red")
+     :onClick #(swap! state/config update :trace? not)}]])
