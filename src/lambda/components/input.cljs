@@ -64,6 +64,14 @@
         idx (.-selectionStart input)]
     (reset-and-restore input (.. e -target -value) idx)))
 
+(defn make-arrow [direction]
+  [:> ui/button
+    {:attach "bottom"
+     :icon (str "arrow " direction)
+     :compact true
+     :onClick #(handle-history-changes (if (= direction "right")
+                                         "ArrowDown" "ArrowUp"))}])
+
 (defn readline []
   [:> ui/container
    {:style {:paddingTop "15px"}}
@@ -78,12 +86,13 @@
      :onChange handle-on-change
      :action {:content "Evaluar" :onClick handle-action}
      :style {:margin-bottom "5px"}}]
+   [make-arrow "left"]
+   [make-arrow "right"]
    [:> ui/button
     {:attach "bottom"
      :content "λ"
      :compact true
      :basic true
-     :floated "left"
      :onClick insert-lambda}]
    [:> ui/button
     {:attach "bottom"
