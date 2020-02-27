@@ -1,23 +1,27 @@
 (ns lambda.reducer
   (:require
-   [clojure.walk :refer [prewalk postwalk]]))
+   [clojure.walk :refer [postwalk]]))
 
 (defn- transform [m]
-  (let [{:keys [opdor opndo]} m]
-    (if (contains? opdor :abst)
-      (prewalk (fn [target]
+  (let [{:keys [opdor opndo]} (:apli m)]
+    (cond
+      (contains? opdor :abst)
+      (postwalk (fn [target]
                  (if (= target (get-in opdor [:abst :param]))
                    opndo
                    target))
-               (get-in opdor [:abst :cuerpo]))
-      {:apli m})))
+                (get-in opdor [:abst :cuerpo]))
+
+      (contains? opdor :apli)
+      {:apli {:opdor (transform opdor)
+              :opndo opndo}}
+
+      :else m)))
 
 (defn- keep-reducing [m]
-  (postwalk (fn [target]
-              (if (contains? target :apli)
-                (transform (:apli target))
-                target))
-            m))
+  (if (contains? m :apli)
+    (transform m)
+    m))
 
 (defn all-reductions [m]
   ;; TODO: fix 10 for managing infinite recursion
