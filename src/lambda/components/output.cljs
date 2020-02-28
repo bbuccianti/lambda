@@ -42,9 +42,10 @@
     (let [cmd (get @state/outputs @state/index)]
       [:> ui/container
        {:style {:paddingTop "50px"}}
-       [make-segment (:command cmd)]
        (if (:trace? @state/config)
-         (for [r (:reductions cmd)]
-           ^{:key (gensym "out")}
-           [make-segment (toString r)])
-         [make-segment (-> cmd :reductions last toString)])])))
+         (doall
+          (for [r (:reductions cmd)]
+            ^{:key (gensym "out")}
+            [make-segment (toString r (:full? @state/config))]))
+         [make-segment (-> cmd :reductions last
+                           (toString (:full? @state/config)))])])))

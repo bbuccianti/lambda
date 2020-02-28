@@ -72,6 +72,15 @@
      :onClick #(handle-history-changes (if (= direction "right")
                                          "ArrowDown" "ArrowUp"))}])
 
+(defn toggle-button [name k]
+  [:> ui/button
+    {:attach "bottom"
+     :content name
+     :compact true
+     :floated "right"
+     :color (if (k @state/config) "green" "red")
+     :onClick #(swap! state/config update k not)}])
+
 (defn readline []
   [:> ui/container
    {:style {:paddingTop "15px"}}
@@ -97,16 +106,11 @@
    [:> ui/button
     {:attach "bottom"
      :compact true
-     :content "Reportá el error!"
+     :content "Reportá errores!"
      :color "blue"
      :floated "right"
      :as "a"
      :target "_blank"
      :href "https://todo.sr.ht/~bbuccianti/lambda"}]
-   [:> ui/button
-    {:attach "bottom"
-     :content "Trace"
-     :compact true
-     :floated "right"
-     :color (if (:trace? @state/config) "green" "red")
-     :onClick #(swap! state/config update :trace? not)}]])
+   [toggle-button "Trace" :trace?]
+   [toggle-button "Full" :full?]])
