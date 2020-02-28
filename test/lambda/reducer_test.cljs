@@ -6,15 +6,11 @@
    [lambda.parser :refer [parse]]
    [lambda.reducer :refer [all-reductions]]))
 
-(deftest vars
-  (are [exp act] (= (-> exp lex restore parse)
-                    (-> act lex restore parse all-reductions last))
-    "x" "x"
-    "(x x)" "x x"))
-
 (deftest aplicaciones
   (are [exp act] (= (-> exp lex restore parse)
                     (-> act lex restore parse all-reductions last))
+    "x"                "x"
+    "(x x)"            "x x"
     "a a"              "(λy.y y) a"
     "a x"              "(λy.y x) a"
     "x a"              "(λy.x y) a"
