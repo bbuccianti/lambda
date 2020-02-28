@@ -1,9 +1,18 @@
 (ns lambda.debruijnator
    (:require
-   [clojure.walk :refer [prewalk postwalk prewalk-demo]]))
+   [clojure.walk :refer [prewalk postwalk]]))
 
 (def indexed (atom {}))
 (def index (atom 0))
+(def state (atom 0))
+
+(defn- load-state[]
+  (let [value @state]
+    (reset! index value)))
+
+(defn- save-state[]
+  (let [value @index]
+    (reset!  state value)))
 
 (defn- add-indexed[var]
      (swap! indexed assoc (keyword var) @index))
@@ -37,21 +46,19 @@
                    cuerpo)}})))
 
 (defn- keep-indexing[exp index]
-  (let [indexer (fn [target]
-                  (if (contains? target :abst)
+  (let [
+        indexer (fn [target]
+                  (do
+                    (if (contains? target :opdor)
+                      (save-state)
+                      )
+                    (if (vector? target)
+                      (if (= (first target) :opndo)
+                        (load-state))                      
+                      )
+                   (if (contains? target :abst)
                         (indexate (target :abst))
-                        target))]
-                  ;; (if (some? (get-in target [:opdor]))
-                  ;;   ;(do
-                  ;;    ; (save-level)
-                  ;;    ; (indexate (get-in target [:apli :opdor :abst])))
-                  ;;   (if (some? (get-in target [:opndo]))
-                  ;;    ; (do
-                  ;;       ;(load-level)
-                  ;;     ;  (indexate (get-in target [:apli :opdor :abst])))
-                  ;;     (if (contains? target :abst)
-                  ;;       (indexate (target :abst))
-                  ;;       target))))]
+                        target)))]
     (postwalk (fn [target]
                 (indexer target))
               exp)))
@@ -60,4 +67,5 @@
   (do
     (swap! indexed {})
     (reset! index 0)
+    (reset! state 0)
    (keep-indexing exp 0)))
