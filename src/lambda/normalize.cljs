@@ -51,9 +51,7 @@
                          (restore-abstr lexed)
                          [cierra]))
 
-        (= (:tipo (first lexed))
-           (:tipo (second lexed))
-           :ident)
+        (every? #{:ident :combi} (map #(:tipo %) (take 2 lexed)))
         (if (= (first (nthrest lexed 2)) nil)
           (into [] (concat [abre]
                            [(first lexed)]

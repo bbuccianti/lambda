@@ -15,6 +15,8 @@
 
     "(((x x) x) x)" "x x x x"
 
+    "(I x)" "I x"
+
     "(λx.(x (λy.y)))" "λx.x λy.y"
 
     "(λx.((x (λy.((y x) x))) x))" "λx.(x λy.y x x) x"
