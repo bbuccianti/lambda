@@ -1,4 +1,15 @@
-(ns lambda.parser)
+(ns lambda.parser
+  (:require
+   [lambda.lexer :refer [lex]]))
+
+(def combinadores {"I" (lex "(λx.x)")
+                   "K" (lex "(λx.(λy.x))")
+                   "O" (lex "(λx.(λy.y))")
+                   "B" (lex "(λx.(λy.(λz.(x (y z)))))")
+                   "C" (lex "(λx.(λy.(λz.((x z) y))))")
+                   "T" (lex "(λx.(λy.(y x)))")
+                   "S" (lex "(λx.(λy.(λz.((x z) (y z)))))")
+                   "W" (lex "(λx.(λy.((x y) y)))")})
 
 (defn- find-next [t v]
   (->> (map-indexed vector v)
@@ -23,6 +34,7 @@
 (defn- match [item]
   (case (:tipo item)
     :ident {:var (:string item)}
+    :combi (mapv match (get combinadores (:string item)))
     (:tipo item)))
 
 (defn- transform [v]
@@ -48,5 +60,7 @@
      :else (first v)))
 
 (defn parse [lexed]
-  (->> (mapv match lexed)
-       transform))
+  (-> (mapv match lexed)
+      flatten
+      vec
+      transform))

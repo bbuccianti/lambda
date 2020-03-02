@@ -70,3 +70,14 @@
                                      :opndo {:var "x" }}}}}
             :opndo {:var "z" }}}
     "((λx.((x y) x)) z)"))
+
+(deftest combinadores
+  (are [exp act] (= exp (-> act lex parse))
+    {:abst {:param {:var "x"}
+            :cuerpo {:var "x"}}}
+    "I"
+
+    {:apli {:opdor {:abst {:param {:var "x"}
+                           :cuerpo {:var "x"}}}
+            :opndo {:var "y"}}}
+    "(I y)"))
