@@ -12,10 +12,7 @@
              "W" (lex "(λx.(λy.((x y) y)))")})
 
 (defn- find-next [t v]
-  (->> (map-indexed vector v)
-       (filter #(= t (second %)))
-       (map first)
-       first))
+  (->> (map-indexed vector v) (filter #(= t (second %))) (map first) first))
 
 (defn- find-matching-close [v]
   (reduce (fn [i item]
