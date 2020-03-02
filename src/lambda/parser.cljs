@@ -2,14 +2,14 @@
   (:require
    [lambda.lexer :refer [lex]]))
 
-(def combinadores {"I" (lex "(λx.x)")
-                   "K" (lex "(λx.(λy.x))")
-                   "O" (lex "(λx.(λy.y))")
-                   "B" (lex "(λx.(λy.(λz.(x (y z)))))")
-                   "C" (lex "(λx.(λy.(λz.((x z) y))))")
-                   "T" (lex "(λx.(λy.(y x)))")
-                   "S" (lex "(λx.(λy.(λz.((x z) (y z)))))")
-                   "W" (lex "(λx.(λy.((x y) y)))")})
+(def combis {"I" (lex "(λx.x)")
+             "K" (lex "(λx.(λy.x))")
+             "O" (lex "(λx.(λy.y))")
+             "B" (lex "(λx.(λy.(λz.(x (y z)))))")
+             "C" (lex "(λx.(λy.(λz.((x z) y))))")
+             "T" (lex "(λx.(λy.(y x)))")
+             "S" (lex "(λx.(λy.(λz.((x z) (y z)))))")
+             "W" (lex "(λx.(λy.((x y) y)))")})
 
 (defn- find-next [t v]
   (->> (map-indexed vector v)
@@ -18,23 +18,18 @@
        first))
 
 (defn- find-matching-close [v]
-  (loop [parens (->> (map-indexed vector v)
-                     (filter #(contains? #{:cierra-p :abre-p} (second %)))
-                     rest)
-         count 0]
-    (case (second (first parens))
-      :abre-p
-      (recur (rest parens) (inc count))
-
-      :cierra-p
-      (if (or (= 0 count) (= 0 (dec count)))
-        (first (first parens))
-        (recur (rest parens) (dec count))))))
+  (reduce (fn [i item]
+            (case (second item)
+              :abre-p (inc i)
+              :cierra-p (if (>= 0 (dec i)) (reduced (first item)) (dec i))))
+          0 (->> (map-indexed vector v)
+                 (filter #(contains? #{:cierra-p :abre-p} (second %)))
+                 rest)))
 
 (defn- match [item]
   (case (:tipo item)
     :ident {:var (:string item)}
-    :combi (mapv match (get combinadores (:string item)))
+    :combi (mapv match (get combis (:string item)))
     (:tipo item)))
 
 (defn- transform [v]
