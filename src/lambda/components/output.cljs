@@ -21,10 +21,10 @@
   [:sub {:style {:fontSize "0.7rem"}} (rest value)])
 
 (defn fix-index [expression]
-  (if (re-matches #".*(_)\w+.*" expression)
+  (if (re-matches #".*_\d+.*" expression)
     (butlast
-     (interleave (split expression #"(?=_)\w+")
-                 (cycle (map make-sub (re-seq #"(?=_)\w+" expression)))))
+     (interleave (split expression #"_\d+")
+                 (cycle (map make-sub (re-seq #"_\d+" expression)))))
     expression))
 
 (defn make-segment [input]
