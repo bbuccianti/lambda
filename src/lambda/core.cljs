@@ -6,6 +6,8 @@
    [lambda.components.input :refer [readline]]
    [lambda.components.output :refer [results]]))
 
+(enable-console-print!)
+
 (defn app []
   [:> ui/container
    [readline]

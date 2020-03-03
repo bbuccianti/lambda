@@ -27,3 +27,5 @@
 (def message-header   (component "Message" "Header"))
 (def message-content  (component "Message" "Content"))
 (def popup            (component "Popup"))
+(def placeholder      (component "Placeholder"))
+(def placeholder-line (component "Placeholder" "Line"))

@@ -12,14 +12,17 @@
     (replace text #"_\d+" "")
     text))
 
-(defn handle-copy [text]
+(defn handle-copy [text label]
   (let [input (gdom/getElement "input")
         old @state/command]
     (reset! state/command (clean-index text))
-    (js/setTimeout #(do (.select input)
-                        (js/document.execCommand "copy")
-                        (reset! state/command old))
-                   15)))
+    (js/setTimeout (fn []
+                     (.select input)
+                     (if (js/document.execCommand "copy")
+                       (reset! label "Copiado!")
+                       (reset! label "Error!"))
+                     (reset! state/command old))
+                   10)))
 
 (defn make-sub [value]
   ^{:key (gensym "sub")}
@@ -33,28 +36,34 @@
     expression))
 
 (defn make-segment [input]
-  [:> ui/segment-group
-   {:horizontal true}
-   [:> ui/segment
-    {:size "huge"
-     :textAlign "center"}
-    (if (:index? @state/config)
-      (fix-index input)
-      input)]
-   [:> ui/popup
-    {:content "Copiado!"
-     :on "click"
-     :pinned true
-     :position "left center"
-     :trigger
-     (r/as-component [:> ui/button
-                      {:attached "right"
-                       :color "teal"
-                       :icon "copy"
-                       :size "huge"
-                       :compact true
-                       :style {:paddingTop "1.2rem"}
-                       :onClick #(handle-copy input)}])}]])
+  (let [copy-msg (r/atom "")]
+    (fn []
+      [:> ui/segment-group
+       {:horizontal true}
+       [:> ui/segment
+        {:size "huge"
+         :textAlign "center"}
+        (if (:index? @state/config)
+          (fix-index input)
+          input)]
+       [:> ui/popup
+        {:on "click"
+         :pinned true
+         :position "left center"
+         :onClose #(reset! copy-msg "")
+         :trigger
+         (r/as-component [:> ui/button
+                          {:attached "right"
+                           :color "teal"
+                           :icon "copy"
+                           :size "huge"
+                           :compact true
+                           :style {:paddingTop "1.2rem"}
+                           :onClick #(handle-copy input copy-msg)}])}
+        (if (empty? @copy-msg)
+          [:> ui/placeholder {:style {:minWidth "50px"}}
+           [:> ui/placeholder-line {:length "large"}]]
+          [:<> [:p @copy-msg]])]])))
 
 (defn results []
   (when (< @state/index (count @state/outputs))
