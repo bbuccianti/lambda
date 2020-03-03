@@ -21,6 +21,4 @@
       (contains? m :var)
       (if (and (contains? m :index) (:index? @state/config))
         (str (:var m) "_" (:index m))
-        (:var m))
-
-      :else m)))
+        (:var m)))))
