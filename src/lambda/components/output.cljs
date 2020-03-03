@@ -2,6 +2,7 @@
   (:require
    [goog.dom :as gdom]
    [reagent.core :as r]
+   [clojure.string :refer [split]]
    [lambda.state :as state]
    [lambda.semantic :as ui]
    [lambda.stringy :refer [toString]]))
@@ -15,13 +16,25 @@
                         (reset! state/command old))
                    15)))
 
+(defn index [value]
+  (if (:index? @state/config)
+    [:sub  {:style {:font-size "0.7rem"}}(rest value)]
+    ""))  
+
+(defn fix-index[s]
+  (if (re-matches #".*(_)\w+.*" s)
+    (butlast
+     (interleave (split s #"(?=_)\w+")
+                 (cycle (map index (re-seq #"(?=_)\w+" s)))))
+    s))
+
 (defn make-segment [input]
   [:> ui/segment-group
    {:horizontal true}
    [:> ui/segment
     {:size "huge"
-     :textAlign "center"
-     :content input}]
+     :textAlign "center"}
+    (fix-index input)]
    [:> ui/popup
     {:content "Copiado!"
      :on "click"
@@ -49,3 +62,5 @@
             [make-segment (toString r (:full? @state/config))]))
          [make-segment (-> cmd :reductions last
                            (toString (:full? @state/config)))])])))
+
+

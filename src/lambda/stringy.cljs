@@ -19,6 +19,9 @@
             (if full? ")" "")))
 
      (contains? m :var)
-     (:var m)
+     (if (contains? m :index)
+       (str (:var m) (if(> (:index m) 1)
+                       (str"_" (:index m))))
+       (:var m))
 
      :else m)))

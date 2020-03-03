@@ -6,14 +6,15 @@
    [lambda.lexer :refer [lex]]
    [lambda.normalize :refer [restore]]
    [lambda.parser :refer [parse]]
+   [lambda.debruijnator :refer [debruijn]]
    [lambda.reducer :refer [all-reductions]]
    [lambda.stringy :refer [toString]]))
 
 (defn normalizar [input]
-  (-> input lex restore parse (toString :full)))
+  (-> input lex restore parse debruijn  (toString :full)))
 
 (defn get-reductions [input]
-  (-> input lex restore parse all-reductions))
+  (-> input lex restore parse debruijn all-reductions))
 
 (defn reset-and-restore [el s i]
   (reset! state/command s)
@@ -112,5 +113,6 @@
      :as "a"
      :target "_blank"
      :href "https://todo.sr.ht/~bbuccianti/lambda"}]
+   [toggle-button "Indices" :index?]
    [toggle-button "Trace" :trace?]
    [toggle-button "Full" :full?]])
