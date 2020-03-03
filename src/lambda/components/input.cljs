@@ -10,15 +10,12 @@
    [lambda.reducer :refer [all-reductions]]
    [lambda.stringy :refer [toString]]))
 
-(defn normalizar [input]
-  (-> input lex restore parse debruijn toString))
-
 (defn get-reductions [input]
   (-> input lex restore parse debruijn all-reductions))
 
 (defn reset-and-restore [el s i]
   (reset! state/command s)
-  (js/setTimeout #(.setSelectionRange el i i) 3))
+  (js/setTimeout #(.setSelectionRange el i i) 5))
 
 (defn handle-action []
   (let [new-input {:command @state/command
@@ -70,8 +67,9 @@
     {:attach "bottom"
      :icon (str "arrow " direction)
      :compact true
-     :onClick #(handle-history-changes (if (= direction "right")
-                                         "ArrowDown" "ArrowUp"))}])
+     :onClick
+     #(handle-history-changes
+       (if (= direction "right") "ArrowDown" "ArrowUp"))}])
 
 (defn toggle-button [name k]
   [:> ui/button

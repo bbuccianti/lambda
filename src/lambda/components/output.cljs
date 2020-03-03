@@ -2,15 +2,20 @@
   (:require
    [goog.dom :as gdom]
    [reagent.core :as r]
-   [clojure.string :refer [split]]
+   [clojure.string :refer [split replace]]
    [lambda.state :as state]
    [lambda.semantic :as ui]
    [lambda.stringy :refer [toString]]))
 
+(defn clean-index [text]
+  (if (re-matches #".*_\d+.*" text)
+    (replace text #"_\d+" "")
+    text))
+
 (defn handle-copy [text]
   (let [input (gdom/getElement "input")
         old @state/command]
-    (reset! state/command text)
+    (reset! state/command (clean-index text))
     (js/setTimeout #(do (.select input)
                         (js/document.execCommand "copy")
                         (reset! state/command old))
@@ -55,7 +60,7 @@
   (when (< @state/index (count @state/outputs))
     (let [cmd (get @state/outputs @state/index)]
       [:> ui/container
-       {:style {:paddingTop "50px"}}
+       {:style {:paddingTop "2rem"}}
        (if (:trace? @state/config)
          (doall
           (for [r (:reductions cmd)]
