@@ -1,27 +1,26 @@
-(ns lambda.stringy)
+(ns lambda.stringy
+  (:require
+   [lambda.state :as state]))
 
-(defn toString
-  ([m]
-   (toString m false))
-  ([m full?]
-   (cond
-     (contains? m :abst)
-     (let [abst (:abst m)]
-       (str "(λ" (toString (:param abst) full?) "."
-            (toString (:cuerpo abst) full?) ")"))
+(defn toString [m]
+  (let [full? (:full? @state/config)]
+    (cond
+      (contains? m :abst)
+      (let [abst (:abst m)]
+        (str "(λ" (toString (:param abst)) "."
+             (toString (:cuerpo abst)) ")"))
 
-     (contains? m :apli)
-     (let [apli (:apli m)]
-       (str (if full? "(" "")
-            (toString (:opdor apli) full?)
-            " "
-            (toString (:opndo apli) full?)
-            (if full? ")" "")))
+      (contains? m :apli)
+      (let [apli (:apli m)]
+        (str (if full? "(" "")
+             (toString (:opdor apli))
+             " "
+             (toString (:opndo apli))
+             (if full? ")" "")))
 
-     (contains? m :var)
-     (if (contains? m :index)
-       (str (:var m) (if(> (:index m) 1)
-                       (str"_" (:index m))))
-       (:var m))
+      (contains? m :var)
+      (if (and (contains? m :index) (:index? @state/config))
+        (str (:var m) "_" (:index m))
+        (:var m))
 
-     :else m)))
+      :else m)))

@@ -11,7 +11,7 @@
    [lambda.stringy :refer [toString]]))
 
 (defn normalizar [input]
-  (-> input lex restore parse debruijn  (toString :full)))
+  (-> input lex restore parse debruijn toString))
 
 (defn get-reductions [input]
   (-> input lex restore parse debruijn all-reductions))
@@ -113,6 +113,6 @@
      :as "a"
      :target "_blank"
      :href "https://todo.sr.ht/~bbuccianti/lambda"}]
-   [toggle-button "Indices" :index?]
+   [toggle-button "Índices" :index?]
    [toggle-button "Trace" :trace?]
    [toggle-button "Full" :full?]])

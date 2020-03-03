@@ -16,17 +16,16 @@
                         (reset! state/command old))
                    15)))
 
-(defn index [value]
-  (if (:index? @state/config)
-    [:sub  {:style {:font-size "0.7rem"}}(rest value)]
-    ""))  
+(defn make-sub [value]
+  ^{:key (gensym "sub")}
+  [:sub {:style {:fontSize "0.7rem"}} (rest value)])
 
-(defn fix-index[s]
-  (if (re-matches #".*(_)\w+.*" s)
+(defn fix-index [expression]
+  (if (re-matches #".*(_)\w+.*" expression)
     (butlast
-     (interleave (split s #"(?=_)\w+")
-                 (cycle (map index (re-seq #"(?=_)\w+" s)))))
-    s))
+     (interleave (split expression #"(?=_)\w+")
+                 (cycle (map make-sub (re-seq #"(?=_)\w+" expression)))))
+    expression))
 
 (defn make-segment [input]
   [:> ui/segment-group
@@ -34,7 +33,9 @@
    [:> ui/segment
     {:size "huge"
      :textAlign "center"}
-    (fix-index input)]
+    (if (:index? @state/config)
+      (fix-index input)
+      input)]
    [:> ui/popup
     {:content "Copiado!"
      :on "click"
@@ -59,8 +60,7 @@
          (doall
           (for [r (:reductions cmd)]
             ^{:key (gensym "out")}
-            [make-segment (toString r (:full? @state/config))]))
-         [make-segment (-> cmd :reductions last
-                           (toString (:full? @state/config)))])])))
+            [make-segment (toString r)]))
+         [make-segment (-> cmd :reductions last toString)])])))
 
 
