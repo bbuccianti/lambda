@@ -7,4 +7,6 @@
 (def command (r/atom ""))
 (def index (r/atom 0))
 (def config (r/atom {:trace? true
-                     :full? false}))
+                     :full? false
+                     :index? false
+                     :report? true}))

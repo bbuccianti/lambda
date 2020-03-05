@@ -76,6 +76,8 @@
      :onKeyPress #(handle-key-press %)
      :onKeyUp #(handle-history-changes (.-key %))
      :onChange handle-on-change
+     :onFocus #(swap! state/config assoc :report? false)
+     :onBlur #(swap! state/config assoc :report? true)
      :action {:content "Evaluar" :onClick handle-action}
      :style {:margin-bottom "5px"}}]
    [make-arrow "left"]
@@ -94,7 +96,13 @@
      :floated "right"
      :as "a"
      :target "_blank"
-     :href "https://todo.sr.ht/~bbuccianti/lambda"}]
-   [toggle-button "Índices" :index?]
+     :href "https://todo.sr.ht/~bbuccianti/lambda"
+     :style {:position "absolute"
+             :bottom "10px"
+             :right "50%"
+             :transform "translateX(50%)"
+             :visibility (if (:report? @state/config) "visible" "hidden")}}]
    [toggle-button "Trace" :trace?]
-   [toggle-button "Full" :full?]])
+   [toggle-button "Full" :full?]
+   [toggle-button "Índices" :index?]])
+
