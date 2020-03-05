@@ -3,19 +3,9 @@
    [goog.dom :as gdom]
    [lambda.semantic :as ui]
    [lambda.state :as state]
-   [lambda.lexer :refer [lex]]
-   [lambda.normalize :refer [restore]]
-   [lambda.parser :refer [parse]]
-   [lambda.debruijnator :refer [debruijn]]
-   [lambda.reducer :refer [all-reductions]]
-   [lambda.stringy :refer [toString]]))
-
-(defn get-reductions [input]
-  (-> input lex restore parse debruijn all-reductions))
-
-(defn reset-and-restore [el s i]
-  (reset! state/command s)
-  (js/setTimeout #(.setSelectionRange el i i) 5))
+   [lambda.utils :refer [wrapped-inc wrapped-dec
+                         get-reductions
+                         reset-and-restore]]))
 
 (defn handle-action []
   (let [new-input {:command @state/command
@@ -38,12 +28,6 @@
     "Enter" (handle-action)
 
     nil))
-
-(defn wrapped-inc [n]
-  (min (inc n) (count @state/outputs)))
-
-(defn wrapped-dec [n]
-  (if (> 0 (dec n)) 0 (dec n)))
 
 (defn swap-history-and-input [f]
   (swap! state/index f)
