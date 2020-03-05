@@ -35,6 +35,16 @@
                  (cycle (map make-sub (re-seq #"_\d+" expression)))))
     expression))
 
+(defn copy-button [input copy-msg]
+  [:> ui/button
+   {:attached "right"
+    :color "teal"
+    :icon "copy"
+    :size "huge"
+    :compact true
+    :style {:paddingTop "1.2rem"}
+    :onClick #(handle-copy input copy-msg)}])
+
 (defn make-segment [input]
   (let [copy-msg (r/atom "")]
     (fn []
@@ -52,14 +62,7 @@
          :position "left center"
          :onClose #(reset! copy-msg "")
          :trigger
-         (r/as-component [:> ui/button
-                          {:attached "right"
-                           :color "teal"
-                           :icon "copy"
-                           :size "huge"
-                           :compact true
-                           :style {:paddingTop "1.2rem"}
-                           :onClick #(handle-copy input copy-msg)}])}
+         (r/as-component (copy-button input copy-msg))}
         (if (empty? @copy-msg)
           [:> ui/placeholder {:style {:minWidth "50px"}}
            [:> ui/placeholder-line {:length "large"}]]

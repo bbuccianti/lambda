@@ -64,6 +64,11 @@
      :color (if (k @state/config) "green" "red")
      :onClick #(swap! state/config update k not)}])
 
+(defn toggle-report [bool]
+  (let [size (gdom/getViewportSize)]
+    (when (> 600 (.-height size))
+      (swap! state/config assoc :report? bool))))
+
 (defn readline []
   [:> ui/container
    {:style {:paddingTop "15px"}}
@@ -76,8 +81,8 @@
      :onKeyPress #(handle-key-press %)
      :onKeyUp #(handle-history-changes (.-key %))
      :onChange handle-on-change
-     :onFocus #(swap! state/config assoc :report? false)
-     :onBlur #(swap! state/config assoc :report? true)
+     :onFocus #(toggle-report false)
+     :onBlur #(toggle-report true)
      :action {:content "Evaluar" :onClick handle-action}
      :style {:margin-bottom "5px"}}]
    [make-arrow "left"]
