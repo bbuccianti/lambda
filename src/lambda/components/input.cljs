@@ -71,6 +71,7 @@
     {:id "input"
      :placeholder "Insertá una expresión lambda!"
      :fluid true
+     :input {:autocomplete "off"}
      :size "huge"
      :value @state/command
      :onKeyPress #(handle-key-press %)
