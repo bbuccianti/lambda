@@ -91,9 +91,9 @@
                         :opndo {:var "x" :index 1}}}}}
       :opndo
       {:abst
-       {:param {:var "x" :index 1}
-        :cuerpo {:apli {:opdor {:var "x" :index 1}
-                        :opndo {:var "x" :index 1}}}}}}}
+       {:param {:var "x" :index 2}
+        :cuerpo {:apli {:opdor {:var "x" :index 2}
+                        :opndo {:var "x" :index 2}}}}}}}
     "(λx.x x) (λx.x x)"
 
     {:apli
@@ -104,8 +104,8 @@
                         :opndo {:var "x" :index 1}}}}}
       :opndo
       {:abst
-       {:param {:var "y" :index 1}
-        :cuerpo {:apli {:opdor {:var "y" :index 1}
-                        :opndo {:var "y" :index 1}}}}}}}
+       {:param {:var "y" :index 2}
+        :cuerpo {:apli {:opdor {:var "y" :index 2}
+                        :opndo {:var "y" :index 2}}}}}}}
     "(λx.x x) (λy.y y)"))
 

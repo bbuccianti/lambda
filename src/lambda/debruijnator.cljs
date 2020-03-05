@@ -16,15 +16,8 @@
                cuerpo)}}))
 
 (defn debruijn [expression]
-  (let [index (atom 0)
-        state (atom 0)]
+  (let [index (atom 0)]
     (postwalk (fn [target]
-                (when (contains? target :opdor)
-                  (reset! state @index))
-
-                (when (and (vector? target) (= (first target) :opndo))
-                  (reset! index @state))
-
                 (if (contains? target :abst)
                   (indexate (target :abst) (swap! index inc))
                   target))
