@@ -64,11 +64,6 @@
      :color (if (k @state/config) "green" "red")
      :onClick #(swap! state/config update k not)}])
 
-(defn toggle-report [bool]
-  (let [size (gdom/getViewportSize)]
-    (when (> 600 (.-height size))
-      (swap! state/config assoc :report? bool))))
-
 (defn readline []
   [:> ui/container
    {:style {:paddingTop "15px"}}
@@ -81,8 +76,6 @@
      :onKeyPress #(handle-key-press %)
      :onKeyUp #(handle-history-changes (.-key %))
      :onChange handle-on-change
-     :onFocus #(toggle-report false)
-     :onBlur #(toggle-report true)
      :action {:content "Evaluar" :onClick handle-action}
      :style {:margin-bottom "5px"}}]
    [make-arrow "left"]
@@ -93,20 +86,6 @@
      :compact true
      :basic true
      :onClick insert-lambda}]
-   [:> ui/button
-    {:attach "bottom"
-     :compact true
-     :content "Reportá errores!"
-     :color "blue"
-     :floated "right"
-     :as "a"
-     :target "_blank"
-     :href "https://todo.sr.ht/~bbuccianti/lambda"
-     :style {:position "absolute"
-             :bottom "10px"
-             :right "50%"
-             :transform "translateX(50%)"
-             :visibility (if (:report? @state/config) "visible" "hidden")}}]
    [toggle-button "Trace" :trace?]
    [toggle-button "Full" :full?]
    [toggle-button "Índices" :index?]])

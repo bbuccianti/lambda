@@ -78,6 +78,15 @@
           (for [r (:reductions cmd)]
             ^{:key (gensym "out")}
             [make-segment (toString r)]))
-         [make-segment (-> cmd :reductions last toString)])])))
+         [make-segment (-> cmd :reductions last toString)])
+       [:> ui/button
+        {:attach "bottom"
+         :compact true
+         :content "Reportá errores!"
+         :color "blue"
+         :floated "right"
+         :as "a"
+         :target "_blank"
+         :href "https://todo.sr.ht/~bbuccianti/lambda"}]])))
 
 
