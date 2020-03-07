@@ -11,40 +11,36 @@
   (let [new-input {:command @state/command
                    :reductions (get-reductions @state/command)}]
     (swap! state/outputs conj new-input)
-    (reset! state/index (dec (count @state/outputs)))))
+    (reset! state/index (dec (count @state/outputs)))
+    (reset-and-restore (gdom/getElement "input") "" 0)))
 
 (defn insert-lambda [e]
   (let [input (gdom/getElement "input")
         idx (.-selectionStart input)
         left (subs @state/command 0 idx)
-        right (subs @state/command idx)]
+        right (subs @state/command idx)
+        command (str left "λ" right)]
     (.preventDefault e)
-    (reset-and-restore input (str left "λ" right) (inc idx))))
+    (reset-and-restore input command (inc idx))))
 
 (defn handle-key-press [e]
   (case (.-key e)
     "\\" (insert-lambda e)
-
     "Enter" (handle-action)
-
     nil))
 
 (defn swap-history-and-input [f]
   (swap! state/index f)
-  (if-let [old (get @state/outputs @state/index)]
-    (reset! state/command (:command old))
-    (reset! state/command "")))
+  (let [old (get @state/outputs @state/index)]
+    (reset-and-restore (gdom/getElement "input")
+                       (if old (:command old) "")
+                       (if old (count (:command old)) 0))))
 
 (defn handle-history-changes [key]
   (case key
     "ArrowUp"   (swap-history-and-input wrapped-dec)
     "ArrowDown" (swap-history-and-input wrapped-inc)
     nil))
-
-(defn handle-on-change [e]
-  (let [input (gdom/getElement "input")
-        idx (.-selectionStart input)]
-    (reset-and-restore input (.. e -target -value) idx)))
 
 (defn make-arrow [direction]
   [:> ui/button
@@ -73,10 +69,10 @@
      :fluid true
      :input {:autocomplete "off"}
      :size "huge"
-     :value @state/command
+     :default-value @state/command
      :onKeyPress #(handle-key-press %)
      :onKeyUp #(handle-history-changes (.-key %))
-     :onChange handle-on-change
+     :onChange #(reset! state/command (.. % -target -value))
      :action {:content "Evaluar" :onClick handle-action}
      :style {:margin-bottom "5px"}}]
    [make-arrow "left"]

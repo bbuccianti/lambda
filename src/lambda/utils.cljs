@@ -17,6 +17,7 @@
 (defn wrapped-inc [n]
   (min (inc n) (count @state/outputs)))
 
-(defn reset-and-restore [el s i]
-  (reset! state/command s)
+(defn reset-and-restore [el cmd i]
+  (set! (.-value el) cmd)
+  (reset! state/command cmd)
   (js/setTimeout #(.setSelectionRange el i i) 5))
