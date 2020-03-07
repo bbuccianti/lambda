@@ -3,8 +3,8 @@
    [goog.dom :as gdom]
    [lambda.semantic :as ui]
    [lambda.state :as state]
-   [lambda.utils :refer [wrapped-inc wrapped-dec
-                         get-reductions
+   [lambda.utils :refer [get-reductions
+                         handle-history-changes
                          reset-and-restore]]))
 
 (defn handle-action []
@@ -27,19 +27,6 @@
   (case (.-key e)
     "\\" (insert-lambda e)
     "Enter" (handle-action)
-    nil))
-
-(defn swap-history-and-input [f]
-  (swap! state/index f)
-  (let [old (get @state/outputs @state/index)]
-    (reset-and-restore (gdom/getElement "input")
-                       (if old (:command old) "")
-                       (if old (count (:command old)) 0))))
-
-(defn handle-history-changes [key]
-  (case key
-    "ArrowUp"   (swap-history-and-input wrapped-dec)
-    "ArrowDown" (swap-history-and-input wrapped-inc)
     nil))
 
 (defn make-arrow [direction]
