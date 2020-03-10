@@ -9,7 +9,8 @@
              "C" (lex "(λx.(λy.(λz.((x z) y))))")
              "T" (lex "(λx.(λy.(y x)))")
              "S" (lex "(λx.(λy.(λz.((x z) (y z)))))")
-             "W" (lex "(λx.(λy.((x y) y)))")})
+             "W" (lex "(λx.(λy.((x y) y)))")
+             "Y" (lex "(λf.(λx.f (x x)) (λx. f (x x)))")})
 
 (defn- find-next [t v]
   (->> (map-indexed vector v) (filter #(= t (second %))) (map first) first))
