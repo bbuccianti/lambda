@@ -20,6 +20,5 @@
     "a c"              "(λx y. x y) (λz. z c) a"
     "((x (λt.t)) x)" "(λu. u (λt. t) ((λy. y) u)) ((λz. z) x)"
     "λf.λx.f (f x)"
-    "(λm.λn.λf.λx.m f (n f x)) (λf.λx.f x) (λf.λx.f x)"
-    ))
+    "(λm.λn.λf.λx.m f (n f x)) (λf.λx.f x) (λf.λx.f x)"))
 
