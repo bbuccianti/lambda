@@ -14,7 +14,7 @@
 
       (contains? opdor :apli)
       {:apli {:opdor (transform opdor)
-              :opndo opndo}}
+              :opndo (transform opndo)}}
 
       :else m)))
 
