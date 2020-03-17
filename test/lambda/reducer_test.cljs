@@ -18,5 +18,8 @@
     "z y z"            "(λx.x y x) z"
     "z a z"            "(λx y. x y x) z a"
     "a c"              "(λx y. x y) (λz. z c) a"
-    "((x (λt.t)) x)" "(λu. u (λt. t) ((λy. y) u)) ((λz. z) x)"))
+    "((x (λt.t)) x)" "(λu. u (λt. t) ((λy. y) u)) ((λz. z) x)"
+    "λf.λx.f (f x)"
+    "(λm.λn.λf.λx.m f (n f x)) (λf.λx.f x) (λf.λx.f x)"
+    ))
 
