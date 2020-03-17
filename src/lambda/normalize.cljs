@@ -83,7 +83,7 @@
                               [(first lexed)]
                               (group-ident (take corte (nthrest lexed 2)))
                               [cierra]
-                              (sobra)
+                              sobra
                              )))
             ))
 

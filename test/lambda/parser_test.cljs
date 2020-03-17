@@ -81,3 +81,22 @@
                            :cuerpo {:var "x"}}}
             :opndo {:var "y"}}}
     "(I y)"))
+
+(deftest dificiles
+  (are [exp act] (= exp (-> act lex restore parse))
+    {:apli
+     {:opdor
+      {:abst
+       {:param {:var "u"}
+        :cuerpo
+        {:apli {:opdor
+                {:apli {:opdor {:var "u"}
+                        :opndo {:abst {:param {:var "t"}
+                                       :cuerpo {:var "t"}}}}}
+                :opndo {:apli {:opdor {:abst {:param {:var "y"}
+                                              :cuerpo {:var "y"}}}
+                               :opndo {:var "u"}}}}}}}
+      :opndo {:apli {:opdor {:abst {:param {:var "z"}
+                                    :cuerpo {:var "z"}}}
+                     :opndo {:var "x"}}}}}
+    "(λu. u (λt. t) ((λy. y) u)) ((λz. z) x)"))
