@@ -39,14 +39,16 @@
             :opndo {:var "z" }}}
     "(((λx.(x y)) (λy.(y y))) z)"
 
-    {:apli {:opdor
-            {:apli {:opdor
-                    {:abst {:param {:var "x" }
-                            :cuerpo {:abst {:param {:var "y" }
-                                            :cuerpo {:apli {:opdor {:var "y" }
-                                                            :opndo {:var "x" }}}}}}}
-                    :opndo {:var "a" }}}
-            :opndo {:var "b" }}}
+    {:apli
+     {:opdor
+      {:apli
+       {:opdor
+        {:abst {:param {:var "x" }
+                :cuerpo {:abst {:param {:var "y" }
+                                :cuerpo {:apli {:opdor {:var "y" }
+                                                :opndo {:var "x" }}}}}}}
+        :opndo {:var "a" }}}
+      :opndo {:var "b" }}}
     "(((λx.(λy.(y x))) a) b)"
 
     {:apli {:opdor {:var "x" }
