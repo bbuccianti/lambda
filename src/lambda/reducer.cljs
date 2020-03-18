@@ -1,6 +1,6 @@
 (ns lambda.reducer
   (:require
-   [clojure.walk :refer [postwalk]]))
+   [clojure.walk :refer [postwalk prewalk]]))
 
 (defn- transform [m]
   (let [{:keys [opdor opndo]} (:apli m)]
@@ -14,7 +14,7 @@
 
 (defn- keep-reducing [m]
   (let [flag (atom true)]
-    (postwalk (fn [target]
+    (prewalk (fn [target]
                 (if (and @flag (get-in target [:apli :opdor :abst] false))
                   (do (reset! flag false) (transform target))
                   target))
