@@ -4,13 +4,18 @@
 
 (def combis {"I" (lex "(λx.x)")
              "K" (lex "(λx.(λy.x))")
-             "O" (lex "(λx.(λy.y))")
+             "S" (lex "(λx.(λy.(λz.((x z) (y z)))))")
              "B" (lex "(λx.(λy.(λz.(x (y z)))))")
              "C" (lex "(λx.(λy.(λz.((x z) y))))")
-             "T" (lex "(λx.(λy.(y x)))")
-             "S" (lex "(λx.(λy.(λz.((x z) (y z)))))")
+             "D" (lex "(λx.(λy.(λz.(λv.((x y) (z v)))")
+             "J" (lex "(λx.(λy.(λz.(λv.((x y) ((x v) z)))")
+             "M" (lex "(λx.(x x))")
+             "O" (lex "(λx.(λy.y))")
+             "R" (lex "(λx.(λy.(λz.((y z) x))))")
+             "Q" (lex "(λx.(λy.(λz.(y (x z)))))")
              "W" (lex "(λx.(λy.((x y) y)))")
-             "Y" (lex "(λf.(λx.f (x x)) (λx. f (x x)))")})
+             "T" (lex "(λx.(λy.(y x)))")
+             "Y" (lex "(λf.(λx.(f (x x))) (λx.(f (x x))))")})
 
 (defn- find-next [t v]
   (->> (map-indexed vector v) (filter #(= t (second %))) (map first) first))
