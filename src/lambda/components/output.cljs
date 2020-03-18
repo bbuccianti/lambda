@@ -87,6 +87,7 @@
          :floated "right"
          :as "a"
          :target "_blank"
-         :href "https://todo.sr.ht/~bbuccianti/lambda"}]])))
+         :href "https://todo.sr.ht/~bbuccianti/lambda"}]
+       [:p "v0.6"]])))
 
 
