@@ -23,11 +23,11 @@
 
 (defn- find-matching-close [v]
   (reduce (fn [i item]
-            (case (second item)
-              :abre-p (inc i)
-              :cierra-p (if (>= 0 (dec i)) (reduced (first item)) (dec i))))
+            (if (= :cierra-p (second item))
+              (if (>= 0 (dec i)) (reduced (first item)) (dec i))
+              (inc i)))
           0 (->> (map-indexed vector v)
-                 (filter #(contains? #{:cierra-p :abre-p} (second %)))
+                 (filter #(#{:cierra-p :abre-p} (second %)))
                  rest)))
 
 (defn- match [item]
