@@ -4,20 +4,20 @@
 
 (defn- transform [m]
   (let [{:keys [opdor opndo]} (:apli m)]
-    (if (contains? opdor :abst)
-      (postwalk (fn [target]
-                 (if (= target (get-in opdor [:abst :param]))
-                   opndo
-                   target))
-                (get-in opdor [:abst :cuerpo]))
-      m)))
+    (postwalk (fn [target]
+                (if (= target (get-in opdor [:abst :param]))
+                  opndo
+                  target))
+              (get-in opdor [:abst :cuerpo]))))
 
-(defn- keep-reducing [m]
-  (postwalk (fn [target]
-              (if (contains? target :apli)
-                (transform target)
-                target))
-            m))
+(defn keep-reducing [m]
+  (let [flag (atom true)]
+    (postwalk (fn [target]
+                (if (and @flag (contains? target :apli)
+                         (contains? (get-in target [:apli :opdor]) :abst))
+                  (do (reset! flag false) (transform target))
+                  target))
+              m)))
 
 (defn all-reductions [m]
   ;; TODO: fix 20 for managing infinite recursion

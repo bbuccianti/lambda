@@ -1,6 +1,6 @@
 (ns lambda.reducer-test
   (:require
-   [cljs.test :refer [deftest is are]]
+   [cljs.test :refer [deftest are]]
    [lambda.lexer :refer [lex]]
    [lambda.normalize :refer [restore]]
    [lambda.parser :refer [parse]]
