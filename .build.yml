@@ -8,7 +8,7 @@ packages:
 sources:
   - https://git.sr.ht/~bbuccianti/lambda
 environment:
-  deploy: deploy@buccianti.dev
+  deploy: deploy@69.164.203.126
 secrets:
   - ffb1b60b-9c71-498c-9ba5-b8108512c1b8
 tasks:

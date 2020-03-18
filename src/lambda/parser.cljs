@@ -1,6 +1,7 @@
 (ns lambda.parser
   (:require
-   [lambda.lexer :refer [lex]]))
+   [lambda.lexer :refer [lex]]
+   [lambda.normalize :refer [restore]]))
 
 (def combis {"I" (lex "(λx.x)")
              "K" (lex "(λx.(λy.x))")
@@ -14,8 +15,7 @@
              "R" (lex "(λx.(λy.(λz.((y z) x))))")
              "Q" (lex "(λx.(λy.(λz.(y (x z)))))")
              "W" (lex "(λx.(λy.((x y) y)))")
-             "T" (lex "(λx.(λy.(y x)))")
-             "Y" (lex "(λf.(λx.(f (x x))) (λx.(f (x x))))")})
+             "T" (lex "(λx.(λy.(y x)))")})
 
 (defn- find-next [t v]
   (->> (map-indexed vector v) (filter #(= t (second %))) (map first) first))
