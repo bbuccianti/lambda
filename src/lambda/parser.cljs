@@ -15,7 +15,8 @@
              "R" (lex "(λx.(λy.(λz.((y z) x))))")
              "Q" (lex "(λx.(λy.(λz.(y (x z)))))")
              "W" (lex "(λx.(λy.((x y) y)))")
-             "T" (lex "(λx.(λy.(y x)))")})
+             "T" (lex "(λx.(λy.(y x)))")
+             "Y" (-> "λf.(λx.f (x x)) (λx.f (x x))" lex restore)})
 
 (defn- find-next [t v]
   (->> (map-indexed vector v) (filter #(= t (second %))) (map first) first))
