@@ -4,11 +4,13 @@
 
 (defn- transform [m]
   (let [{:keys [opdor opndo]} (:apli m)]
-    (postwalk (fn [target]
-                (if (= target (get-in opdor [:abst :param]))
-                  opndo
-                  target))
-              (get-in opdor [:abst :cuerpo]))))
+    (if (and (contains? opdor :abst) (not (nil? opndo)))
+      (postwalk (fn [target]
+                  (if (= target (get-in opdor [:abst :param]))
+                    opndo
+                    target))
+                (get-in opdor [:abst :cuerpo]))
+      m)))
 
 (defn- keep-reducing [m]
   (let [flag (atom true)]
