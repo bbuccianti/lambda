@@ -52,7 +52,8 @@
       (group-ident (concat [abre (first lexed) (second lexed) cierra]
                            (nthrest lexed 2))))
 
-    (= [:ident abre] [(:tipo (first lexed)) (second lexed)])
+    (and (#{:ident :combi} (:tipo (first lexed)))
+         (= abre (second lexed)))
     (let [corte (next-close-var (nthrest lexed 2) 0 0)
           sobra (nthrest (nthrest lexed 2) (inc corte))]
       (if (nil? (second sobra))
@@ -95,7 +96,7 @@
 
     (= (first lexed) point)
     (cond
-      (and (= (:tipo (second lexed)) :ident)
+      (and (#{:ident :combi} (:tipo (second lexed)))
            (or (= (first (nthrest lexed 2)) cierra)
                (nil? (first (nthrest lexed 2)))))
       (concat [(first lexed)] (restore-abstr (rest lexed)))
@@ -103,7 +104,7 @@
       (= (second lexed) abre)
       (let [corte (next-close-var (nthrest lexed 2) 0 0)
             sobra (nthrest (nthrest lexed 2) (+ 1 corte))]
-        (if (or (= (:tipo (first sobra)) :cierra-p) (nil? (first sobra)))
+        (if (or (= (first sobra) cierra) (nil? (first sobra)))
           (concat [(first lexed)]
                   (group-ident (take corte (nthrest lexed 2)))
                   (restore-abstr sobra))
