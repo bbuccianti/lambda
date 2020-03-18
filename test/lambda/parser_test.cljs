@@ -101,4 +101,29 @@
       :opndo {:apli {:opdor {:abst {:param {:var "z"}
                                     :cuerpo {:var "z"}}}
                      :opndo {:var "x"}}}}}
-    "(λu. u (λt. t) ((λy. y) u)) ((λz. z) x)"))
+    "(λu. u (λt. t) ((λy. y) u)) ((λz. z) x)"
+
+    {:apli
+     {:opdor
+      {:apli
+       {:opdor
+        {:abst
+         {:param {:var "x"}
+          :cuerpo
+          {:abst
+           {:param {:var "y"}
+            :cuerpo
+            {:abst
+             {:param {:var "z"}
+              :cuerpo
+              {:apli {:opdor {:apli {:opdor {:var "x"}
+                                     :opndo {:var "z"}}}
+                      :opndo {:apli {:opdor {:var "y"}
+                                     :opndo {:var "z"}}}}}}}}}}}
+        :opndo {:abst {:param {:var "x"}
+                       :cuerpo {:abst {:param {:var "y"}
+                                       :cuerpo {:var "x"}}}}}}}
+      :opndo {:abst {:param {:var "x"}
+                     :cuerpo {:abst {:param {:var "y"}
+                                     :cuerpo {:var "x"}}}}}}}
+    "S K K"))

@@ -10,6 +10,7 @@
 (deftest restoring
   (are [expected actual] (= (lex expected) (-> actual lex restore))
     "(I x)"                                  "I x"
+    "((S K) K)"                              "S K K"
     "(((x x) x) x)"                          "x x x x"
     "(λx.(x (λy.y)))"                        "λx.x λy.y"
     "((λx.(x x))(a a))"                      "(λx.x x)(a a)"
