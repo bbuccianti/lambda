@@ -10,11 +10,10 @@
                   target))
               (get-in opdor [:abst :cuerpo]))))
 
-(defn keep-reducing [m]
+(defn- keep-reducing [m]
   (let [flag (atom true)]
     (postwalk (fn [target]
-                (if (and @flag (contains? target :apli)
-                         (contains? (get-in target [:apli :opdor]) :abst))
+                (if (and @flag (get-in target [:apli :opdor :abst] false))
                   (do (reset! flag false) (transform target))
                   target))
               m)))
