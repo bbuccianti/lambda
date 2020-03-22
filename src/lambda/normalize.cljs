@@ -38,13 +38,15 @@
 
 (defn group-ident [lexed]
   (cond
-    (= (first lexed) nil)
-    nil
 
     (= (:tipo (first lexed)) :lambda)
-    (vec (concat [abre]
+    (concat [abre]
                  (restore-abstr lexed)
-                 [cierra]))
+                 [cierra])
+
+    (and (#{:ident :combi} (:tipo (first lexed))) (or (nil? (second lexed)) (= (second lexed) cierra)))
+      lexed
+      
 
     (every? #{:ident :combi} (map #(:tipo %) (take 2 lexed)))
     (if (= (first (nthrest lexed 2)) nil)
@@ -69,6 +71,9 @@
     (let [corte (next-close-var (rest lexed) 0 0)
           sobra (nthrest (rest lexed) (+ 1 corte))]
       (cond
+        (nil? (first sobra))
+        (concat (group-ident (take corte (rest lexed))))
+        
         (#{:ident :combi} (:tipo (first sobra)))
         (if (nil? (second sobra))
           (concat [abre] (group-ident (take corte (rest lexed)))
@@ -87,7 +92,6 @@
                                  (group-ident (take corte (rest lexed)))
                                  (group-ident (take corte2 (rest sobra)))
                                  [cierra] sobra2))))
-
         :else lexed))))
 
 (defn restore-abstr [lexed]
@@ -95,31 +99,15 @@
     (= nil (first lexed))    nil
 
     (= (first lexed) point)
-    (cond
-      (and (#{:ident :combi} (:tipo (second lexed)))
-           (or (= (first (nthrest lexed 2)) cierra)
-               (nil? (first (nthrest lexed 2)))))
-      (concat [(first lexed)] (restore-abstr (rest lexed)))
-
-      (= (second lexed) abre)
-      (let [corte (next-close-var (nthrest lexed 2) 0 0)
-            sobra (nthrest (nthrest lexed 2) (+ 1 corte))]
-        (if (or (= (first sobra) cierra) (nil? (first sobra)))
-          (concat [(first lexed)]
-                  (group-ident (take corte (nthrest lexed 2)))
-                  (restore-abstr sobra))
-          (concat [(first lexed)] [abre]
-                  (group-ident (take corte (nthrest lexed 2)))
-                  (restore-abstr sobra) [cierra])))
-
-      (= (second lexed) lamb)
-      (concat [(first lexed)] (restore-abstr (rest lexed)))
-
-      :else
-      (let [corte (next-close-var (rest lexed) 0 0)]
+    (let [corte (next-close-var (rest lexed) 0 0)
+          sobra (nthrest (rest lexed) (+ 1 corte))]
+     (if (some? (first sobra))
         (concat [(first lexed)]
                 (group-ident (take corte (rest lexed)))
-                (restore-abstr (nthrest (rest lexed) corte)))))
+                (restore-abstr sobra))
+        (concat [(first lexed)]
+                (group-ident (take corte (rest lexed))))))
+
     :else
     (concat [(first lexed)] (restore-abstr (rest lexed)))))
 
@@ -142,4 +130,4 @@
     :else (concat [(first lexed)] (restore-exp (rest lexed)))))
 
 (defn restore[lexed]
-  (group-ident (restore-abstr (restore-exp (restore-lambda lexed)))))
+  (group-ident (restore-exp (restore-lambda lexed))))

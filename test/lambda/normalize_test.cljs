@@ -26,5 +26,10 @@
     "(λ x y z.y z x) (λh.z z) (λx.x x) (λy.y y)"
 
     "((((((λx.(λy.(λz.((x z) y)))) (λx.(λy.(λz.((x z) y))))) a) b) c) a) "
-    "(λx y z. x z y) (λx y z. x z y) a b c a"))
+    "(λx y z. x z y) (λx y z. x z y) a b c a"
+
+    "((λx.((λu.u) (λv.(x v)))) ((λt.(t t)) w))"
+    "(λx.(λu.u) (λv.x v)) ((λt.t t) w)"
+
+    "((λx.((λz.x) y)) x)" "(λx.(λz.x) y) x"))
 
