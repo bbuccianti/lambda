@@ -19,4 +19,4 @@
   (->> (split s #"(\(|\)|\.|[A-Za-z]+)")
        (map trim)
        (remove empty?)
-       (mapv #(into {} {:tipo (translate %) :string %}))))
+       (map #(into {} {:tipo (translate %) :string %}))))

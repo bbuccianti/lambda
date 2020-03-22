@@ -19,47 +19,46 @@
              "Y" (-> "λf.(λx.f (x x)) (λx.f (x x))" lex restore)})
 
 (defn- find-next [t v]
-  (->> (map-indexed vector v) (filter #(= t (second %))) (map first) first))
+  (->> (map-indexed vector v) (filter #(= t (second %))) ffirst))
 
-(defn- find-matching-close [v]
-  (reduce (fn [i item]
-            (if (= :cierra-p (second item))
-              (if (>= 0 (dec i)) (reduced (first item)) (dec i))
-              (inc i)))
-          0 (->> (map-indexed vector v)
+(defn- find-matching-close [lxd]
+  (reduce (fn [acc [i elx]]
+            (if (= :cierra-p elx)
+              (if (>= 0 (dec acc)) (reduced i) (dec acc))
+              (inc acc)))
+          0 (->> (map-indexed list lxd)
                  (filter #(#{:cierra-p :abre-p} (second %)))
                  rest)))
 
 (defn- match [item]
   (case (:tipo item)
     :ident {:var (:string item)}
-    :combi (mapv match (get combis (:string item)))
+    :combi (map match (get combis (:string item)))
     (:tipo item)))
 
-(defn- transform [v]
+(defn- transform [lxd]
   (cond
-    (and (= (first v) :abre-p) (= (second v) :lambda))
-    (let [punto (find-next :punto v)]
+    (and (= (first lxd) :abre-p) (= (second lxd) :lambda))
+    (let [punto (find-next :punto lxd)]
       {:abst
-       {:param (nth v (dec punto))
-        :cuerpo (transform (subvec v (inc punto)))}})
+       {:param (nth lxd (dec punto))
+        :cuerpo (transform (drop (inc punto) lxd))}})
 
-    (= (first v) :abre-p)
-    (if (and (>= 3 (count v)) (<= (count v) 5))
-      {:apli {:opdor (nth v 1) :opndo (nth v 2)}}
+    (= (first lxd) :abre-p)
+    (if (and (>= 3 (count lxd)) (<= (count lxd) 5))
+      {:apli {:opdor (nth lxd 1) :opndo (nth lxd 2)}}
 
-      (let [c (find-matching-close v)]
-        (if (map? (second v))
-          {:apli {:opdor (nth v 1)
-                  :opndo (transform (subvec v 2 c))}}
+      (let [c (find-matching-close lxd)]
+        (if (map? (second lxd))
+          {:apli {:opdor (nth lxd 1)
+                  :opndo (transform (->> lxd (take c) (drop 2)))}}
 
-          {:apli {:opdor (transform (subvec v 1 c))
-                  :opndo (transform (subvec v (inc c)))}})))
+          {:apli {:opdor (transform (->> lxd (take c) (drop 1)))
+                  :opndo (transform (drop (inc c) lxd))}})))
 
-     :else (first v)))
+    :else (first lxd)))
 
 (defn parse [lexed]
-  (-> (mapv match lexed)
+  (-> (map match lexed)
       flatten
-      vec
       transform))
