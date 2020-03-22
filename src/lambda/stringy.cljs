@@ -21,4 +21,9 @@
       (contains? m :var)
       (if (and (contains? m :index) (:index? @state/config))
         (str (:var m) "_" (:index m))
-        (:var m)))))
+        (:var m))
+
+      (contains? m :ident)
+      (if (and (contains? m :index) (:index? @state/config))
+        (str (:ident m) "_" (:index m))
+        (:ident m)))))

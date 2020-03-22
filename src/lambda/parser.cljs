@@ -1,7 +1,7 @@
 (ns lambda.parser
   (:require
    [lambda.lexer :refer [lex]]
-   [lambda.normalize :refer [restore]]))
+   [lambda.normalizer :refer [restore]]))
 
 (def combis {"I" (lex "(λx.x)")
              "K" (lex "(λx.(λy.x))")
@@ -41,7 +41,7 @@
     (and (= (first lxd) :abre-p) (= (second lxd) :lambda))
     (let [punto (find-next :punto lxd)]
       {:abst
-       {:param (nth lxd (dec punto))
+       {:param {:ident (:var (nth lxd (dec punto)))}
         :cuerpo (transform (drop (inc punto) lxd))}})
 
     (= (first lxd) :abre-p)

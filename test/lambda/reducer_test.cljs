@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer [deftest are]]
    [lambda.lexer :refer [lex]]
-   [lambda.normalize :refer [restore]]
+   [lambda.normalizer :refer [restore]]
    [lambda.parser :refer [parse]]
    [lambda.reducer :refer [all-reductions]]))
 
@@ -18,6 +18,13 @@
     "z y z"            "(λx.x y x) z"
     "z a z"            "(λx y. x y x) z a"
     "a c"              "(λx y. x y) (λz. z c) a"
-    "((x (λt.t)) x)"   "(λu. u (λt. t) ((λy. y) u)) ((λz. z) x)"
-    "λf.λx.f (f x)"    "(λm.λn.λf.λx.m f (n f x)) (λf.λx.f x) (λf.λx.f x)"))
+    "(x (λt.t)) x"   "(λu.u (λt.t) ((λy.y) u)) ((λz. z) x)"
+    "(λf x.f (f x))" "(λm n f x.m f (n f x)) (λf x.f x) (λf x.f x)"
+    ))
 
+(deftest dificcile
+  (are [exp act] (= (-> exp lex restore parse)
+                    (-> act lex restore parse all-reductions last
+                        ))
+    ;;"B" "S (K S) K"
+    "(λx y.x)" "(λy.(λx y.x)) a"))

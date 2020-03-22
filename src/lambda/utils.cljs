@@ -3,7 +3,7 @@
    [goog.dom :as gdom]
    [lambda.state :as state]
    [lambda.lexer :refer [lex]]
-   [lambda.normalize :refer [restore]]
+   [lambda.normalizer :refer [restore]]
    [lambda.parser :refer [parse]]
    [lambda.debruijnator :refer [debruijn]]
    [lambda.reducer :refer [all-reductions]]

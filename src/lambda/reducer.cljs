@@ -6,7 +6,10 @@
   (let [{:keys [opdor opndo]} (:apli m)]
     (if (and (contains? opdor :abst) (not (nil? opndo)))
       (postwalk (fn [target]
-                  (if (= target (get-in opdor [:abst :param]))
+                  (if (and (= (:var target)
+                              (get-in opdor [:abst :param :ident]))
+                           (= (:index target)
+                              (get-in opdor [:abst :param :index])))
                     opndo
                     target))
                 (get-in opdor [:abst :cuerpo]))

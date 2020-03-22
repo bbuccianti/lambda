@@ -3,7 +3,7 @@
    [cljs.test :refer [deftest is are]]
    [lambda.lexer :refer [lex]]
    [lambda.parser :refer [parse]]
-   [lambda.normalize :refer [restore]]))
+   [lambda.normalizer :refer [restore]]))
 
 (deftest variables
   (is (= {:var "x"} (-> "x" lex parse))))
@@ -14,14 +14,14 @@
          (-> "(x x)" lex parse)))
   (is (= {:apli
           {:opdor {:abst
-                   {:param {:var "y" }
+                   {:param {:ident "y" }
                     :cuerpo {:apli {:opdor {:var "y" }
                                     :opndo {:var "x" }}}}}
            :opndo {:var "a" }}}
          (-> "((λy.(y x)) a)" lex parse))))
 
 (deftest abstraccion
-  (is (= {:abst {:param {:var "x" }
+  (is (= {:abst {:param {:ident "x" }
                  :cuerpo {:apli {:opdor {:var "x" }
                                  :opndo {:var "x" }}}}}
          (-> "(λx.(x x))" lex parse))))
@@ -30,10 +30,10 @@
   (are [exp act] (= exp (-> act lex parse))
     {:apli {:opdor
             {:apli
-             {:opdor {:abst {:param {:var "x" }
+             {:opdor {:abst {:param {:ident "x" }
                              :cuerpo {:apli {:opdor {:var "x" }
                                              :opndo {:var "y" }}}}}
-              :opndo {:abst {:param {:var "y" }
+              :opndo {:abst {:param {:ident "y" }
                              :cuerpo {:apli {:opdor {:var "y" }
                                              :opndo {:var "y" }}}}}}}
             :opndo {:var "z" }}}
@@ -43,8 +43,8 @@
      {:opdor
       {:apli
        {:opdor
-        {:abst {:param {:var "x" }
-                :cuerpo {:abst {:param {:var "y" }
+        {:abst {:param {:ident "x" }
+                :cuerpo {:abst {:param {:ident "y" }
                                 :cuerpo {:apli {:opdor {:var "y" }
                                                 :opndo {:var "x" }}}}}}}
         :opndo {:var "a" }}}
@@ -52,12 +52,12 @@
     "(((λx.(λy.(y x))) a) b)"
 
     {:apli {:opdor {:var "x" }
-            :opndo {:abst {:param {:var "x" }
+            :opndo {:abst {:param {:ident "x" }
                            :cuerpo {:apli {:opdor {:var "y" }
                                            :opndo {:var "y" }}}}}}}
     "(x (λx.(y y)))"
 
-    {:apli {:opdor {:abst {:param {:var "x" }
+    {:apli {:opdor {:abst {:param {:ident "x" }
                            :cuerpo {:apli {:opdor {:apli
                                                    {:opdor {:var "y" }
                                                     :opndo {:var "y" }}}
@@ -66,7 +66,7 @@
     "((λx.((y y) x)) z)"
 
     {:apli {:opdor {:abst
-                    {:param {:var "x" }
+                    {:param {:ident "x" }
                      :cuerpo {:apli {:opdor {:apli {:opdor {:var "x" }
                                                     :opndo {:var "y" }}}
                                      :opndo {:var "x" }}}}}
@@ -75,11 +75,11 @@
 
 (deftest combinadores
   (are [exp act] (= exp (-> act lex parse))
-    {:abst {:param {:var "x"}
+    {:abst {:param {:ident "x"}
             :cuerpo {:var "x"}}}
     "I"
 
-    {:apli {:opdor {:abst {:param {:var "x"}
+    {:apli {:opdor {:abst {:param {:ident "x"}
                            :cuerpo {:var "x"}}}
             :opndo {:var "y"}}}
     "(I y)"))
@@ -89,16 +89,16 @@
     {:apli
      {:opdor
       {:abst
-       {:param {:var "u"}
+       {:param {:ident "u"}
         :cuerpo
         {:apli {:opdor
                 {:apli {:opdor {:var "u"}
-                        :opndo {:abst {:param {:var "t"}
+                        :opndo {:abst {:param {:ident "t"}
                                        :cuerpo {:var "t"}}}}}
-                :opndo {:apli {:opdor {:abst {:param {:var "y"}
+                :opndo {:apli {:opdor {:abst {:param {:ident "y"}
                                               :cuerpo {:var "y"}}}
                                :opndo {:var "u"}}}}}}}
-      :opndo {:apli {:opdor {:abst {:param {:var "z"}
+      :opndo {:apli {:opdor {:abst {:param {:ident "z"}
                                     :cuerpo {:var "z"}}}
                      :opndo {:var "x"}}}}}
     "(λu. u (λt. t) ((λy. y) u)) ((λz. z) x)"
@@ -108,22 +108,22 @@
       {:apli
        {:opdor
         {:abst
-         {:param {:var "x"}
+         {:param {:ident "x"}
           :cuerpo
           {:abst
-           {:param {:var "y"}
+           {:param {:ident "y"}
             :cuerpo
             {:abst
-             {:param {:var "z"}
+             {:param {:ident "z"}
               :cuerpo
               {:apli {:opdor {:apli {:opdor {:var "x"}
                                      :opndo {:var "z"}}}
                       :opndo {:apli {:opdor {:var "y"}
                                      :opndo {:var "z"}}}}}}}}}}}
-        :opndo {:abst {:param {:var "x"}
-                       :cuerpo {:abst {:param {:var "y"}
+        :opndo {:abst {:param {:ident "x"}
+                       :cuerpo {:abst {:param {:ident "y"}
                                        :cuerpo {:var "x"}}}}}}}
-      :opndo {:abst {:param {:var "x"}
-                     :cuerpo {:abst {:param {:var "y"}
+      :opndo {:abst {:param {:ident "x"}
+                     :cuerpo {:abst {:param {:ident "y"}
                                      :cuerpo {:var "x"}}}}}}}
     "S K K"))

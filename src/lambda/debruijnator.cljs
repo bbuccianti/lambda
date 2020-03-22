@@ -7,7 +7,8 @@
    {:param (assoc param :index index)
     :cuerpo
     (prewalk (fn [target]
-               (if (and (contains? target :var) (= target param))
+               (if (and (contains? target :var)
+                        (= (:var target) (:ident param)))
                  (assoc target :index index)
                  target))
              cuerpo)}})
