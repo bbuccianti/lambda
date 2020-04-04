@@ -20,11 +20,11 @@
     "a c"              "(λx y. x y) (λz. z c) a"
     "(x (λt.t)) x"   "(λu.u (λt.t) ((λy.y) u)) ((λz. z) x)"
     "(λf x.f (f x))" "(λm n f x.m f (n f x)) (λf x.f x) (λf x.f x)"
-    ))
+    "(λx y.x)" "(λy.(λx y.x)) a"))
 
 (deftest dificcile
-  (are [exp act] (= (-> exp lex restore parse)
-                    (-> act lex restore parse all-reductions last
-                        ))
-    ;;"B" "S (K S) K"
-    "(λx y.x)" "(λy.(λx y.x)) a"))
+  (are [exp act] (= (-> exp lex parse)
+                    (-> act lex restore parse all-reductions last))
+    ;;"(λz.(λy.(λz.(z (y z)))))" "S (K S) K"
+    "(λx.z)" "(λx.((λy.z) z))"
+    ))

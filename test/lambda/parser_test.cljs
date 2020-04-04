@@ -127,3 +127,9 @@
                      :cuerpo {:abst {:param {:ident "y"}
                                      :cuerpo {:var "x"}}}}}}}
     "S K K"))
+
+(deftest combinators
+  (are [exp act] (= (-> exp lex parse)
+                    (-> act lex restore parse))
+    "(((λx.(λy.(λz.((x z) (y z))))) ((λx.(λy.x)) (λx.(λy.(λz.((x z) (y z))))))) (λx.(λy.x)))"
+    "S (K S) K"))

@@ -65,6 +65,7 @@
   (are [exp act] (= (lex exp) (-> act lex restore))
     "(I x)" "I x"
     "((S K) K)" "S K K"
+    "((S (K S)) K)" "S (K S) K"
     "(((λx.(λy.(y x))) a) b)" "(λx y.y x) a b"
     "((λx.((x y) x)) z)" "(λx.x y x) z"
     "(((λx.(λy.(y x))) a) b)" "(λx y.y x) a b"

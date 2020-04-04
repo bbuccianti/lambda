@@ -38,7 +38,7 @@
     :else lexed))
 
 (defn regroup [lexed]
-  (if (= 1 (count lexed))
+  (if (>= 1 (count lexed))
     lexed
     (reduce (fn [acc nxt] (surround acc nxt))
             (surround (take 2 lexed))
