@@ -18,12 +18,8 @@
              (toString (:opndo apli))
              (if full? ")" "")))
 
-      (contains? m :var)
-      (if (and (contains? m :index) (:index? @state/config))
-        (str (:var m) "_" (:index m))
-        (:var m))
-
-      (contains? m :ident)
-      (if (and (contains? m :index) (:index? @state/config))
-        (str (:ident m) "_" (:index m))
-        (:ident m)))))
+      (or (contains? m :var) (contains? m :ident))
+      (let [kw (if (contains? m :var) :var :ident)]
+        (if (and (contains? m :index) (:index? @state/config))
+          (str (kw m) "_" (:index m))
+          (kw m))))))
