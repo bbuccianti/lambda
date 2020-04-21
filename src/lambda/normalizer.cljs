@@ -7,9 +7,6 @@
 (def lambda {:tipo :lambda :string "λ"})
 (def punto {:tipo :punto :string "."})
 
-(defn flast [lst]
-  (last (first lst)))
-
 (defn next-x [x lexed]
   (->> (map-indexed list lexed) (filter #(= x (second %))) ffirst))
 
@@ -30,6 +27,9 @@
     (#{:ident :combi} (:tipo (first lexed)))
     (cons (first lexed) (isolate (rest lexed)))
 
+    (= lambda (first lexed))
+    (list lexed)
+
     (= abre-p (first lexed))
     (let [c (next-close lexed)]
       (cons (take (inc c) lexed)
@@ -49,6 +49,9 @@
          (cond
            (and (= abre-p (first i)) (= :ident (:tipo (second i))))
            (regroup (-> (butlast (rest i)) isolate inners))
+
+           (= lambda (first i))
+           (-> (flatten (list abre-p i cierra-p)) isolate inners)
 
            (and (= abre-p (first i)) (= lambda (second i)))
            (let [p (next-x punto i)

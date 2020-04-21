@@ -85,3 +85,10 @@
 
     "((λx.((λu.u) (λv.(x v)))) ((λt.(t t)) w))"
     "(λx.(λu.u) (λv.x v)) ((λt.t t) w)"))
+
+(deftest chained
+  (are [exp act] (= (lex exp) (-> act lex restore))
+    "(λx.(λy.(y x)))" "(λx.λy.y x)"
+
+    "((((((λx.(λy.(λz.((x z) y)))) (λx.(λy.(λz.((x z) y))))) a) b) c) a) "
+    "(λx.λy.λz.x z y) (λx.λy.λz.x z y) a b c a"))
