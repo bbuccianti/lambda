@@ -8,6 +8,7 @@
     :cuerpo
     (prewalk (fn [target]
                (if (and (contains? target :var)
+                        (not (contains? target :index))
                         (= (:var target) (:ident param)))
                  (assoc target :index index)
                  target))

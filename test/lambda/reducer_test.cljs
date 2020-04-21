@@ -4,7 +4,9 @@
    [lambda.lexer :refer [lex]]
    [lambda.normalizer :refer [restore]]
    [lambda.parser :refer [parse]]
-   [lambda.reducer :refer [all-reductions]]))
+   [lambda.reducer :refer [all-reductions]]
+   [lambda.debruijnator :refer [debruijn]]
+   [lambda.stringy :refer [toString]]))
 
 (deftest aplicaciones
   (are [exp act] (= (-> exp lex restore parse)
@@ -23,8 +25,18 @@
     "(λx y.x)" "(λy.(λx y.x)) a"))
 
 (deftest dificcile
-  (are [exp act] (= (-> exp lex parse)
-                    (-> act lex restore parse all-reductions last))
-    ;;"(λz.(λy.(λz.(z (y z)))))" "S (K S) K"
+  (are [exp act] (= (-> exp lex restore parse debruijn toString)
+                    (-> act lex restore parse debruijn
+                        all-reductions last toString))
     "(λx.z)" "(λx.((λy.z) z))"
-    ))
+
+    ;; note that z have different index's here
+    "(λz y z.z (y z))"
+    "(λx y z.x z (y z)) ((λx y.x) (λx y z.x z (y z))) (λx y.x)"
+
+    "(λy.(λx y z.x z (y z)))" "((λx y.x) (λx y z.x z (y z)))"
+
+    "(λx y.x y)" "(λb.(λx y.x y)) a"
+
+    "n M z"
+    "(λx y x.x y z) (λx y.y) M n"))
