@@ -51,4 +51,9 @@
 
     ;; Sub 3 1 = 2
     "λf.λx.f (f x)"
-    "(λm.λn.n (λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)) m) (λf.λx.f (f (f x))) (λf.λx.f x)"))
+    "(λm.λn.n (λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)) m) (λf.λx.f (f (f x))) (λf.λx.f x)"
+
+    ;; Mul 2 3 = 6
+    "λf.λx.f (f (f (f (f (f x)))))"
+    "(λm.λn.λf.λx.m (n f) x) (λf.λx.f (f x)) (λf.λx.f (f (f x)))"
+    ))
