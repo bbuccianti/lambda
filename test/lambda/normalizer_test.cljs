@@ -91,4 +91,9 @@
     "(λx.(λy.(y x)))" "(λx.λy.y x)"
 
     "((((((λx.(λy.(λz.((x z) y)))) (λx.(λy.(λz.((x z) y))))) a) b) c) a) "
-    "(λx.λy.λz.x z y) (λx.λy.λz.x z y) a b c a"))
+    "(λx.λy.λz.x z y) (λx.λy.λz.x z y) a b c a"
+
+    "(((λm.(λn.(m n))) a) b)"
+    "((λm.λn.m n) a b)"
+    ;;"(λn.n (λf.λa.λb.f b ((λm.λn.λf.λx.m f (n f x)) a b)))"
+    ))

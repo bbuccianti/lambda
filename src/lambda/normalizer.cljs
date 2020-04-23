@@ -47,7 +47,8 @@
 (defn inners [lst]
   (map (fn [i]
          (cond
-           (and (= abre-p (first i)) (= :ident (:tipo (second i))))
+           (or (and (= abre-p (first i)) (= :ident (:tipo (second i))))
+               (= [abre-p abre-p] (take 2 i)))
            (regroup (-> (butlast (rest i)) isolate inners))
 
            (= lambda (first i))
@@ -67,9 +68,6 @@
               (if (> (count left) 4)
                 (repeat (- (count left) 3) (last i))
                 (last i))))
-
-           (= [abre-p abre-p] (take 2 i))
-           (surround (-> (butlast (rest i)) isolate inners))
 
            :else i))
        lst))

@@ -10,6 +10,7 @@
 
 (deftest abst
   (are [exp act] (= exp (-> act lex parse toString))
-    "x (λx.y y)"             "(x (λx.(y y)))"
-    "(λx.y y x) z"           "((λx.((y y) x)) z)"
-    "(λy.x x) (λx.y y)"      "((λy.(x x)) (λx.(y y)))"))
+    "x (λx.y y)"                 "(x (λx.(y y)))"
+    "(λx.y y x) z"               "((λx.((y y) x)) z)"
+    "(λy.x x) (λx.y y)"          "((λy.(x x)) (λx.(y y)))"
+    "(λf.(λx.(f (f (f x)))))"    "(λf.(λx.(f (f (f x)))))"))

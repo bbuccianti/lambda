@@ -11,12 +11,13 @@
              (toString (:cuerpo abst)) ")"))
 
       (contains? m :apli)
-      (let [apli (:apli m)]
-        (str (if full? "(" "")
+      (let [apli (:apli m)
+            church-number? (= "f" (get-in apli [:opdor :var]))]
+        (str (if (or full? church-number?) "(" "")
              (toString (:opdor apli))
              " "
              (toString (:opndo apli))
-             (if full? ")" "")))
+             (if (or full? church-number?) ")" "")))
 
       (or (contains? m :var) (contains? m :ident))
       (let [kw (if (contains? m :var) :var :ident)]

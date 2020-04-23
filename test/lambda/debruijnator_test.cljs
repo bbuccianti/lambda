@@ -1,10 +1,10 @@
 (ns lambda.debruijnator-test
   (:require
-   [cljs.test :refer [deftest are]]
+   [cljs.test :refer [deftest are is]]
    [lambda.lexer :refer [lex]]
    [lambda.normalizer :refer [restore]]
    [lambda.parser :refer [parse]]
-   [lambda.debruijnator :refer [debruijn]]))
+   [lambda.debruijnator :refer [debruijn cleaner]]))
 
 (deftest one-level
   (are [exp act]
@@ -86,3 +86,6 @@
                         :opndo {:var "y" :index 2}}}}}}}
     "(λx.x x) (λy.y y)"))
 
+(deftest clean-and-renew
+  (is (= (-> "(λx.x x) (λy.y y)" lex restore parse)
+         (-> "(λx.x x) (λy.y y)" lex restore parse debruijn cleaner))))

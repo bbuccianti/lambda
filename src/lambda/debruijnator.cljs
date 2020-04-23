@@ -21,3 +21,10 @@
                   (indexate (:abst target) (swap! index inc))
                   target))
               expression)))
+
+(defn cleaner [expression]
+  (postwalk (fn [target]
+              (if (contains? target :index)
+                (dissoc target :index)
+                target))
+            expression))
