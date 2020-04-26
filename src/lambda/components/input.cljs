@@ -3,6 +3,7 @@
    [goog.dom :as gdom]
    [lambda.semantic :as ui]
    [lambda.state :as state]
+   [lambda.instaparser :as instaparser]
    [lambda.utils :refer [get-reductions
                          handle-history-changes
                          reset-and-restore]]))
@@ -49,28 +50,37 @@
 
 (defn readline []
   [:> ui/container
-   {:style {:paddingTop "15px"}}
-   [:> ui/input
-    {:id "input"
-     :placeholder "Insertá una expresión lambda!"
-     :fluid true
-     :input {:autocomplete "off"}
-     :size "huge"
-     :default-value @state/command
-     :onKeyPress #(handle-key-press %)
-     :onKeyUp #(handle-history-changes (.-key %))
-     :onChange #(reset! state/command (.. % -target -value))
-     :action {:content "Evaluar" :onClick handle-action}
-     :style {:margin-bottom "5px"}}]
-   [make-arrow "left"]
-   [make-arrow "right"]
-   [:> ui/button
-    {:attach "bottom"
-     :content "λ"
-     :compact true
-     :basic true
-     :onClick insert-lambda}]
-   [toggle-button "Trace" :trace?]
-   [toggle-button "Full" :full?]
-   [toggle-button "Índices" :index?]])
+   {:style {:paddingTop "15px"
+            :position "relative"}}
+   [:> ui/form
+    [:> ui/input
+     {:id "input"
+      :placeholder "Insertá una expresión lambda!"
+      :fluid true
+      :input {:autoComplete "off"}
+      :error (instaparser/failure?)
+      :size "huge"
+      :default-value @state/command
+      :onKeyPress #(handle-key-press %)
+      :onKeyUp #(handle-history-changes (.-key %))
+      :onChange #(reset! state/command (.. % -target -value))
+      :action {:content "Evaluar"
+               :onClick handle-action
+               :disabled (instaparser/failure?)}
+      :style {:margin-bottom "5px"}}]
+    [:> ui/container
+     {:textAlign "center"
+      :style {:position "absolute"}}
+     [instaparser/help-label]]
+    [make-arrow "left"]
+    [make-arrow "right"]
+    [:> ui/button
+     {:attach "bottom"
+      :content "λ"
+      :compact true
+      :basic true
+      :onClick insert-lambda}]
+    [toggle-button "Trace" :trace?]
+    [toggle-button "Full" :full?]
+    [toggle-button "Índices" :index?]]])
 

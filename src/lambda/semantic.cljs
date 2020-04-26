@@ -29,3 +29,5 @@
 (def popup            (component "Popup"))
 (def placeholder      (component "Placeholder"))
 (def placeholder-line (component "Placeholder" "Line"))
+(def label            (component "Label"))
+(def form             (component "Form"))

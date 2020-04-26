@@ -88,6 +88,6 @@
          :as "a"
          :target "_blank"
          :href "https://todo.sr.ht/~bbuccianti/lambda"}]
-       [:p "v0.8"]])))
+       [:p "v0.9"]])))
 
 
