@@ -9,11 +9,13 @@
                          reset-and-restore]]))
 
 (defn handle-action []
-  (let [new-input {:command @state/command
-                   :reductions (get-reductions @state/command)}]
-    (swap! state/outputs conj new-input)
-    (reset! state/index (dec (count @state/outputs)))
-    (reset-and-restore (gdom/getElement "input") "" 0)))
+  (if (not (empty? @state/command))
+    (let [new-input {:command @state/command
+                     :reductions (get-reductions @state/command)}
+          old-index (count @state/outputs)]
+      (swap! state/outputs conj new-input)
+      (reset! state/index old-index)
+      (reset-and-restore (gdom/getElement "input") "" 0))))
 
 (defn insert-lambda [e]
   (let [input (gdom/getElement "input")
@@ -82,5 +84,7 @@
       :onClick insert-lambda}]
     [toggle-button "Trace" :trace?]
     [toggle-button "Full" :full?]
-    [toggle-button "Índices" :index?]]])
+    [toggle-button "Índices" :index?]
+    [:h1 (str "command: " @state/command)]
+    [:h1 (str "index: " @state/index)]]])
 

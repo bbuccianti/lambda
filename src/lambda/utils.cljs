@@ -10,7 +10,7 @@
    [lambda.stringy :refer [toString]]))
 
 (defn get-reductions [input]
-  (-> input lex restore parse debruijn all-reductions))
+  (-> input lex restore parse all-reductions))
 
 (defn wrapped-dec [n]
   (if (> 0 (dec n)) (count @state/outputs) (dec n)))
