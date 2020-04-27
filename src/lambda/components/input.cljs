@@ -84,7 +84,5 @@
       :onClick insert-lambda}]
     [toggle-button "Trace" :trace?]
     [toggle-button "Full" :full?]
-    [toggle-button "Índices" :index?]
-    [:h1 (str "command: " @state/command)]
-    [:h1 (str "index: " @state/index)]]])
+    [toggle-button "Índices" :index?]]])
 

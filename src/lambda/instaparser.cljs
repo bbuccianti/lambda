@@ -11,7 +11,7 @@
 (defparser lambda-parser
   "expr = var | <whitespace>* abstraction | <whitespace>* application
     application = <'('> <whitespace>* expr <whitespace>* expr <whitespace>* <')'> | (<whitespace>* expr)*
-    abstraction = <'λ'> <whitespace>* ident <whitespace>* <'.'> body
+    abstraction = <'λ'> (<whitespace>* ident)* <'.'> body
     whitespace = #'\\s+'
     body = expr
     ident = #'[a-z]+'
