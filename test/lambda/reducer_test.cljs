@@ -4,7 +4,7 @@
    [lambda.lexer :refer [lex]]
    [lambda.normalizer :refer [restore]]
    [lambda.parser :refer [parse]]
-   [lambda.reducer :refer [all-reductions]]
+   [lambda.reducer :refer [all-reductions count-replacements]]
    [lambda.debruijnator :refer [debruijn]]
    [lambda.stringy :refer [toString]]))
 
@@ -20,7 +20,6 @@
     "z y z"            "(λx.x y x) z"
     "z a z"            "(λx y. x y x) z a"
     "a c"              "(λx y. x y) (λz. z c) a"
-    "(x (λt.t)) x"   "(λu.u (λt.t) ((λy.y) u)) ((λz. z) x)"
     "(λf x.f (f x))" "(λm n f x.m f (n f x)) (λf x.f x) (λf x.f x)"
     "(λx y.x)" "(λy.(λx y.x)) a"))
 
@@ -28,6 +27,10 @@
   (are [exp act] (= (-> exp lex restore parse toString)
                     (-> act lex restore parse all-reductions last toString))
     "(λx.z)" "(λx.((λy.z) z))"
+
+    "x y" "(λx y. y x) y x"
+
+    "(x (λt.t)) x"   "(λu.u (λt.t) ((λy.y) u)) ((λz. z) x)"
 
     ;; note that z have different index's here
     "(λz y z.z (y z))"
@@ -55,5 +58,4 @@
 
     ;; Mul 2 3 = 6
     "λf.λx.f (f (f (f (f (f x)))))"
-    "(λm.λn.λf.λx.m (n f) x) (λf.λx.f (f x)) (λf.λx.f (f (f x)))"
-    ))
+    "(λm.λn.λf.λx.m (n f) x) (λf.λx.f (f x)) (λf.λx.f (f (f x)))"))
