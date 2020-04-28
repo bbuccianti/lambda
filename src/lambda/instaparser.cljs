@@ -20,6 +20,7 @@
 
 (defn failure? []
   (and (not (empty? @state/command))
+       (:errors? @state/config)
        (insta/failure? (lambda-parser @state/command))))
 
 (defn expectings [failure]
@@ -35,6 +36,7 @@
       [:> ui/label
        {:pointing "above"
         :size "big"
-        :color "red"}
+        :color "red"
+        :style {:z-index "1"}}
        (str "¿Falta " (expectings failure)
             " cerca de la posición " (-> failure :column) "?")])))

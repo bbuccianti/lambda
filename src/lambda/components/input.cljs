@@ -48,7 +48,8 @@
      :compact true
      :floated "right"
      :color (if (k @state/config) "green" "red")
-     :onClick #(swap! state/config update k not)}])
+     :onClick #(swap! state/config update k not)
+     :style {:z-index "90"}}])
 
 (defn readline []
   [:> ui/container
@@ -60,7 +61,7 @@
       :placeholder "Insertá una expresión lambda!"
       :fluid true
       :input {:autoComplete "off"}
-      :error (instaparser/failure?)
+      :error (and (:errors? @state/config) (instaparser/failure?))
       :size "huge"
       :default-value @state/command
       :onKeyPress #(handle-key-press %)
@@ -68,11 +69,16 @@
       :onChange #(reset! state/command (.. % -target -value))
       :action {:content "Evaluar"
                :onClick handle-action
-               :disabled (instaparser/failure?)}
+               :disabled (and (:errors? @state/config) (instaparser/failure?))}
       :style {:margin-bottom "5px"}}]
-    [:> ui/container
+    [:> ui/segment
      {:textAlign "center"
-      :style {:position "absolute"}}
+      :compact true
+      :vertical true
+      :basic true
+      :style {:position "absolute"
+              :left "50%"
+              :transform "translateX(-50%)"}}
      [instaparser/help-label]]
     [make-arrow "left"]
     [make-arrow "right"]
@@ -83,6 +89,7 @@
       :basic true
       :onClick insert-lambda}]
     [toggle-button "Trace" :trace?]
+    [toggle-button "Lint" :errors?]
     [toggle-button "Full" :full?]
     [toggle-button "Índices" :index?]]])
 
