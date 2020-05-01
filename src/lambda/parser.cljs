@@ -1,7 +1,7 @@
 (ns lambda.parser
   (:require
    [lambda.lexer :refer [lex]]
-   [lambda.normalizer :refer [restore]]))
+   [lambda.normalizer :refer [restore next-x]]))
 
 (def combis {"I" (lex "(λx.x)")
              "K" (lex "(λx.(λy.x))")
@@ -17,9 +17,6 @@
              "W" (lex "(λx.(λy.((x y) y)))")
              "T" (lex "(λx.(λy.(y x)))")
              "Y" (-> "λf.(λx.f (x x)) (λx.f (x x))" lex restore)})
-
-(defn- find-next [t v]
-  (->> (map-indexed vector v) (filter #(= t (second %))) ffirst))
 
 (defn- find-matching-close [lxd]
   (reduce (fn [acc [i elx]]
@@ -39,7 +36,7 @@
 (defn- transform [lxd]
   (cond
     (and (= (first lxd) :abre-p) (= (second lxd) :lambda))
-    (let [punto (find-next :punto lxd)]
+    (let [punto (next-x :punto lxd)]
       {:abst
        {:param {:ident (:var (nth lxd (dec punto)))}
         :cuerpo (transform (drop (inc punto) lxd))}})
