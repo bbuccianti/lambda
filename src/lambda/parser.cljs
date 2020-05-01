@@ -1,7 +1,7 @@
 (ns lambda.parser
   (:require
    [lambda.lexer :refer [lex]]
-   [lambda.normalizer :refer [restore next-x]]))
+   [lambda.normalizer :refer [restore next-x next-close]]))
 
 (def combis {"I" (lex "(λx.x)")
              "K" (lex "(λx.(λy.x))")
@@ -18,15 +18,6 @@
              "T" (lex "(λx.(λy.(y x)))")
              "Y" (-> "λf.(λx.f (x x)) (λx.f (x x))" lex restore)})
 
-(defn- find-matching-close [lxd]
-  (reduce (fn [acc [i elx]]
-            (if (= :cierra-p elx)
-              (if (>= 0 (dec acc)) (reduced i) (dec acc))
-              (inc acc)))
-          0 (->> (map-indexed list lxd)
-                 (filter #(#{:cierra-p :abre-p} (second %)))
-                 rest)))
-
 (defn- match [item]
   (case (:tipo item)
     :ident {:var (:string item)}
@@ -36,22 +27,20 @@
 (defn- transform [lxd]
   (cond
     (and (= (first lxd) :abre-p) (= (second lxd) :lambda))
-    (let [punto (next-x :punto lxd)]
+    (let [punto (next-x :punto lxd)
+          c (next-close lxd #{:abre-p :cierra-p} :cierra-p)]
       {:abst
        {:param {:ident (:var (nth lxd (dec punto)))}
-        :cuerpo (transform (drop (inc punto) lxd))}})
+        :cuerpo (transform (->> lxd (take c) (drop (inc punto))))}})
 
     (= (first lxd) :abre-p)
-    (if (and (>= 3 (count lxd)) (<= (count lxd) 5))
-      {:apli {:opdor (nth lxd 1) :opndo (nth lxd 2)}}
-
-      (let [c (find-matching-close lxd)]
-        (if (map? (second lxd))
-          {:apli {:opdor (nth lxd 1)
-                  :opndo (transform (->> lxd (take c) (drop 2)))}}
-
-          {:apli {:opdor (transform (->> lxd (take c) (drop 1)))
-                  :opndo (transform (drop (inc c) lxd))}})))
+    (let [inner (rest (butlast lxd))
+          c (next-close inner #{:abre-p :cierra-p} :cierra-p)]
+      (if (map? (first inner))
+        {:apli {:opdor (first inner)
+                :opndo (transform (rest inner))}}
+        {:apli {:opdor (transform (take (inc c) inner))
+                :opndo (transform (drop (inc c) inner))}}))
 
     :else (first lxd)))
 

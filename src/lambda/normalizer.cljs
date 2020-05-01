@@ -10,13 +10,13 @@
 (defn next-x [x lexed]
   (->> (map-indexed list lexed) (filter #(= x (second %))) ffirst))
 
-(defn next-close [lexed]
-  (reduce (fn [acc item]
-            (if (= cierra-p (second item))
-              (if (>= 0 (dec acc)) (reduced (first item)) (dec acc))
+(defn next-close [lexed t-set t-close]
+  (reduce (fn [acc [i item]]
+            (if (= t-close item)
+              (if (>= 0 (dec acc)) (reduced i) (dec acc))
               (inc acc)))
           0 (->> (map-indexed list lexed)
-                 (filter #(#{abre-p cierra-p} (second %))))))
+                 (filter #(t-set (second %))))))
 
 (defn surround
   ([x] (apply surround x))
@@ -31,7 +31,7 @@
     (list lexed)
 
     (= abre-p (first lexed))
-    (let [c (next-close lexed)]
+    (let [c (next-close lexed #{abre-p cierra-p} cierra-p)]
       (cons (take (inc c) lexed)
             (isolate (drop (inc c) lexed))))
 

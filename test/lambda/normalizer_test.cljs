@@ -4,11 +4,6 @@
    [lambda.normalizer :refer [restore next-close regroup isolate]]
    [lambda.lexer :refer [lex]]))
 
-(deftest closing
-  (are [exp act] (= exp (-> act lex next-close))
-    3 "(())"
-    7 "(((())))"))
-
 (deftest isolation
   (are [exp act] (= exp (-> act lex isolate))
     (list {:tipo :ident :string "x"}
@@ -94,6 +89,4 @@
     "(λx.λy.λz.x z y) (λx.λy.λz.x z y) a b c a"
 
     "(((λm.(λn.(m n))) a) b)"
-    "((λm.λn.m n) a b)"
-    ;;"(λn.n (λf.λa.λb.f b ((λm.λn.λf.λx.m f (n f x)) a b)))"
-    ))
+    "((λm.λn.m n) a b)"))
