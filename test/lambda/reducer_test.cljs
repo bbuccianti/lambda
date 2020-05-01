@@ -76,4 +76,15 @@
     "λf.λx.(f (f (f x)))"
     "(λn.((λf.(λx.f (x x)) (λx.f (x x))) (λc.λn.λm.λf.λx.(λd.(λp.λq.λr.p q r) ((λn.n (λz.(λx.λy.y))
 (λx.λy.x)) d) ((λf.λx.x) f x) (f (c d m f x))) ((λm.λn.n (λn.λf.λx.n (λg.λh.h (g f)) (λu.x)
-(λu.u)) m) n m))) ((λn.λf.λx.f (n f x)) n)) (λf.λx.f (f (f (f (f (f x)))))) (λf.λx.f (f x))"))
+(λu.u)) m) n m))) ((λn.λf.λx.f (n f x)) n)) (λf.λx.f (f (f (f (f (f x)))))) (λf.λx.f (f x))"
+
+    ;; Fibo 6 = 8
+    "(λf.λx.f (f (f (f (f (f (f (f x))))))))"
+    "(λn.n (λf.λa.λb.f b ((λm.λn.λf.λx.m f (n f x)) a b)) (λx.λy.x) (λf.λx.x) (λf.λx.f x))
+(λf.λx.f (f (f (f (f (f x))))))"
+
+    ;; Fact 2 = 2
+    "(λf.λx.f (f x))"
+    "((λf.(λx.f (x x)) (λx.f (x x))) (λf.λx.( λp.λq.λr.p q r) ((λn.n (λz.(λx.λy.y))
+(λx.λy.x)) x) (λf.λx.f x) ((λm.λn.λf.λx.m (n f) x) x (f ((λn.λf.λx.n (λg.λh.h (g f))
+(λu.x) (λu.u)) x))))) (λf.λx.(f (f x)))"))
