@@ -3,7 +3,8 @@
    [cljs.test :refer [deftest is are]]
    [lambda.lexer :refer [lex]]
    [lambda.parser :refer [parse]]
-   [lambda.normalizer :refer [restore]]))
+   [lambda.normalizer :refer [restore]]
+   [lambda.stringy :refer [toString]]))
 
 (deftest variables
   (is (= {:var "x"} (-> "x" lex parse))))
@@ -126,9 +127,36 @@
       :opndo {:abst {:param {:ident "x"}
                      :cuerpo {:abst {:param {:ident "y"}
                                      :cuerpo {:var "x"}}}}}}}
-    "S K K"))
+    "S K K"
 
-(deftest combinators
+    {:abst
+     {:param {:ident "x"}
+      :cuerpo {:apli
+               {:opdor {:var "f"}
+                :opndo {:apli
+                        {:opdor {:var "x"}
+                         :opndo {:var "x"}}}}}}}
+    "(λx.(f (x x)))"
+
+    {:abst
+     {:param {:ident "f"}
+      :cuerpo {:apli
+               {:opdor {:abst
+                        {:param {:ident "x"}
+                         :cuerpo {:apli
+                                  {:opdor {:var "f"}
+                                   :opndo {:apli
+                                           {:opdor {:var "x"}
+                                            :opndo {:var "x"}}}}}}}
+                :opndo {:abst
+                        {:param {:ident "x"}
+                         :cuerpo {:apli
+                                  {:opdor {:var "f"}
+                                   :opndo {:apli
+                                           {:opdor {:var "x"}
+                                            :opndo {:var "x"}}}}}}}}}}}
+    "Y"))
+
   (are [exp act] (= (-> exp lex parse)
                     (-> act lex restore parse))
     "(((λx.(λy.(λz.((x z) (y z))))) ((λx.(λy.x)) (λx.(λy.(λz.((x z) (y z))))))) (λx.(λy.x)))"

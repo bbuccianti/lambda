@@ -1,7 +1,7 @@
 (ns lambda.parser
   (:require
    [lambda.lexer :refer [lex]]
-   [lambda.normalizer :refer [restore next-x next-close]]))
+   [lambda.normalizer :refer [next-x next-close]]))
 
 (def combis {"I" (lex "(λx.x)")
              "K" (lex "(λx.(λy.x))")
@@ -16,7 +16,7 @@
              "Q" (lex "(λx.(λy.(λz.(y (x z)))))")
              "W" (lex "(λx.(λy.((x y) y)))")
              "T" (lex "(λx.(λy.(y x)))")
-             "Y" (-> "λf.(λx.f (x x)) (λx.f (x x))" lex restore)})
+             "Y" (lex "(λf.((λx.(f (x x))) (λx.(f (x x)))))")})
 
 (defn- match [item]
   (case (:tipo item)
