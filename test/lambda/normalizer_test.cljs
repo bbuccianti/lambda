@@ -89,4 +89,7 @@
     "(λx.λy.λz.x z y) (λx.λy.λz.x z y) a b c a"
 
     "(((λm.(λn.(m n))) a) b)"
-    "((λm.λn.m n) a b)"))
+    "((λm.λn.m n) a b)"
+
+    "(f ((((c d) m) f) x))"
+    "(f (c d m f x))"))

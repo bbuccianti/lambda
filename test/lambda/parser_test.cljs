@@ -157,7 +157,9 @@
                                             :opndo {:var "x"}}}}}}}}}}}
     "Y"))
 
+(deftest difficult
   (are [exp act] (= (-> exp lex parse)
                     (-> act lex restore parse))
     "(((λx.(λy.(λz.((x z) (y z))))) ((λx.(λy.x)) (λx.(λy.(λz.((x z) (y z))))))) (λx.(λy.x)))"
-    "S (K S) K"))
+    "S (K S) K"
+    "(λf.((λx.(f (x x))) (λx.(f (x x)))))" "Y"))

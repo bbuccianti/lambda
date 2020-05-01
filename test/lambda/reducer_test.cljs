@@ -4,7 +4,7 @@
    [lambda.lexer :refer [lex]]
    [lambda.normalizer :refer [restore]]
    [lambda.parser :refer [parse]]
-   [lambda.reducer :refer [all-reductions count-replacements]]
+   [lambda.reducer :refer [all-reductions count-replacements can-reduce?]]
    [lambda.debruijnator :refer [debruijn]]
    [lambda.stringy :refer [toString]]))
 
@@ -22,6 +22,14 @@
     "a c"              "(λx y. x y) (λz. z c) a"
     "(λf x.f (f x))" "(λm n f x.m f (n f x)) (λf x.f x) (λf x.f x)"
     "(λx y.x)" "(λy.(λx y.x)) a"))
+
+(deftest can-do-it?
+  (are [exp act] (= exp (-> act lex restore parse can-reduce?))
+    false "x"
+    false "(x x)"
+    true "(λx y.x) a"
+    true "a ((λx y.x) b)"
+    true "(λx.(λy.y) z)"))
 
 (deftest dificcile
   (are [exp act] (= (-> exp lex restore parse toString)
@@ -44,6 +52,10 @@
     "λf.λx.f (f (f (f (f (f (f (f x)))))))"
     "(λm.λn.λf.λx.n m f x) (λf.λx.f (f x)) (λf.λx.f (f (f x)))"
 
+    ;; Succ 3 = 4
+    "λf.λx.(f (f (f (f x)))))"
+    "(λn.λf.λx.f (n f x)) (λf.λx.(f (f (f x))))"
+
     ;; Pred 5 = 4
     "λf.λx.f (f (f (f x)))"
     "(λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)) (λf.λx.f (f (f (f (f x)))))"
@@ -58,4 +70,10 @@
 
     ;; Mul 2 3 = 6
     "λf.λx.f (f (f (f (f (f x)))))"
-    "(λm.λn.λf.λx.m (n f) x) (λf.λx.f (f x)) (λf.λx.f (f (f x)))"))
+    "(λm.λn.λf.λx.m (n f) x) (λf.λx.f (f x)) (λf.λx.f (f (f x)))"
+
+    ;; Div 6 2 = 3
+    "λf.λx.(f (f (f x)))"
+    "(λn.((λf.(λx.f (x x)) (λx.f (x x))) (λc.λn.λm.λf.λx.(λd.(λp.λq.λr.p q r) ((λn.n (λz.(λx.λy.y))
+(λx.λy.x)) d) ((λf.λx.x) f x) (f (c d m f x))) ((λm.λn.n (λn.λf.λx.n (λg.λh.h (g f)) (λu.x)
+(λu.u)) m) n m))) ((λn.λf.λx.f (n f x)) n)) (λf.λx.f (f (f (f (f (f x)))))) (λf.λx.f (f x))"))

@@ -34,7 +34,7 @@
                   (get-in opdor [:abst :cuerpo])))
       m)))
 
-(defn- keep-reducing [m]
+(defn- step [m]
   (let [flag (atom true)]
     (prewalk (fn [target]
                (if (and @flag (get-in target [:apli :opdor :abst] false))
@@ -45,8 +45,24 @@
                    (-> m cleaner debruijn))
                m))))
 
+(defn can-reduce? [m]
+  (cond
+    (get-in m [:apli :opdor :abst] false) true
+
+    (get-in m [:apli] false)
+    (or (can-reduce? (:opdor (:apli m))) (can-reduce? (:opndo (:apli m))))
+
+    (get-in m [:abst] false)
+    (can-reduce? (get-in m [:abst :cuerpo]))
+
+    :else false))
+
 (defn all-reductions [m]
-  ;; TODO: fix 20 for managing infinite recursion
-  (distinct (take 20 (iterate keep-reducing (debruijn m)))))
+  (loop [new-expr (debruijn m)
+         acc [m]]
+    (if (can-reduce? new-expr)
+      (let [reduction (step new-expr)]
+        (recur reduction (conj acc reduction)))
+      acc)))
 
 
