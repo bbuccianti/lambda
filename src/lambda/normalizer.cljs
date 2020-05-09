@@ -1,6 +1,4 @@
-(ns lambda.normalizer
-  (:require
-   [lambda.lexer :as l]))
+(ns lambda.normalizer)
 
 (def abre-p {:tipo :abre-p :string "("})
 (def cierra-p {:tipo :cierra-p :string ")"})
@@ -18,9 +16,8 @@
           0 (->> (map-indexed list lexed)
                  (filter #(t-set (second %))))))
 
-(defn surround
-  ([x] (apply surround x))
-  ([x1 x2] (list abre-p x1 x2 cierra-p)))
+(defn surround [x1 x2]
+  (list abre-p x1 x2 cierra-p))
 
 (defn isolate [lexed]
   (cond
@@ -41,24 +38,24 @@
   (if (>= 1 (count lexed))
     lexed
     (reduce (fn [acc nxt] (surround acc nxt))
-            (surround (take 2 lexed))
+            (apply surround (take 2 lexed))
             (drop 2 lexed))))
 
 (defn inners [lst]
   (map (fn [i]
          (cond
-           (or (and (= abre-p (first i)) (= :ident (:tipo (second i))))
+           (or (= [:abre-p :ident] (map :tipo (take 2 i)))
                (= [abre-p abre-p] (take 2 i)))
-           (regroup (-> (butlast (rest i)) isolate inners))
+           (-> (butlast (rest i)) isolate inners regroup)
 
            (= lambda (first i))
            (-> (flatten (list abre-p i cierra-p)) isolate inners)
 
-           (and (= abre-p (first i)) (= lambda (second i)))
+           (= [:abre-p :lambda] (map :tipo (take 2 i)))
            (let [p (next-x punto i)
                  left (take (inc p) i)
-                 middle (regroup (-> (butlast (drop (inc p) i))
-                                     isolate inners))]
+                 middle (-> (butlast (drop (inc p) i))
+                            isolate inners regroup)]
              (list
               (if (> (count left) 4)
                 (map #(list abre-p lambda % punto)
