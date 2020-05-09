@@ -59,10 +59,9 @@
 
 (defn all-reductions [m]
   (loop [new-expr (debruijn m)
-         acc [m]]
+         acc (transient [m])]
     (if (can-reduce? new-expr)
       (let [reduction (step new-expr)]
-        (recur reduction (conj acc reduction)))
-      acc)))
-
+        (recur reduction (conj! acc reduction)))
+      (persistent! acc))))
 
