@@ -81,6 +81,5 @@
       :basic true
       :onClick insert-lambda}]
     [toggle-button "Trace" :trace?]
-    [toggle-button "Full" :full?]
-    [toggle-button "Índices" :index?]]])
+    [toggle-button "Full" :full?]]])
 

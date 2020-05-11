@@ -21,6 +21,4 @@
 
       (or (contains? m :var) (contains? m :ident))
       (let [kw (if (contains? m :var) :var :ident)]
-        (if (and (contains? m :index) (:index? @state/config))
-          (str (kw m) "_" (:index m))
-          (kw m))))))
+        (str (kw m) (when (contains? m :index) (str "_" (:index m))))))))
