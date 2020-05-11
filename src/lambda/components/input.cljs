@@ -1,6 +1,7 @@
 (ns lambda.components.input
   (:require
    [goog.dom :as gdom]
+   [reagent.core :as r]
    [lambda.semantic :as ui]
    [lambda.state :as state]
    [lambda.instaparser :as instaparser]
@@ -44,15 +45,22 @@
      #(handle-history-changes
        (if (= direction "right") "ArrowDown" "ArrowUp"))}])
 
-(defn toggle-button [name k]
-  [:> ui/button
-    {:attach "bottom"
-     :content name
-     :compact true
-     :floated "right"
-     :color (if (k @state/config) "green" "red")
-     :onClick #(swap! state/config update k not)
-     :style {:z-index "90"}}])
+(defn toggle-button [name k message]
+  [:> ui/popup
+   {:on "hover"
+    :position "bottom center"
+    :size "small"
+    :trigger
+    (r/as-component
+     [:> ui/button
+      {:attach "bottom"
+       :content name
+       :compact true
+       :floated "right"
+       :color (if (k @state/config) "green" "red")
+       :onClick #(swap! state/config update k not)
+       :style {:z-index "90"}}])}
+   message])
 
 (defn readline []
   [:> ui/container
@@ -80,6 +88,6 @@
       :compact true
       :basic true
       :onClick insert-lambda}]
-    [toggle-button "Trace" :trace?]
-    [toggle-button "Full" :full?]]])
+    [toggle-button "Trace" :trace? "Muestra todas las reglas aplicadas"]
+    [toggle-button "Full" :full? "Muestra todos los paréntesis"]]])
 
