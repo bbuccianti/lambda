@@ -68,17 +68,46 @@
            [:> ui/placeholder-line {:length "large"}]]
           [:<> [:p @copy-msg]])]])))
 
+(defn show-error [cmd]
+  [:> ui/container
+   [:> ui/segment
+    {:size "huge"
+     :textAlign "center"
+     :color "red"
+     :inverted true
+     :style {:margin-bottom "1.5em"}}
+    [:pre
+     {:style
+      {:position "relative"
+       :font-size "22px"
+       :font-weight "bold"
+       :margin-bottom "2em"
+       :display "inline-block"}}
+     (str (-> cmd :error :text))
+     [:pre
+      {:style {:position :absolute
+               :margin-top ".3em"
+               :font-size "22px"
+               :font-weight "bold"}}
+      (str (apply str (repeat (dec (-> cmd :error :column)) " "))
+           "^")]]
+    [:p
+     {:style {:font-size "18px"}}
+     (str "¿Falta " (-> cmd :error :expectings) "?")]]])
+
 (defn results []
   (when (< @state/index (count @state/outputs))
     (let [cmd (get @state/outputs @state/index)]
       [:> ui/container
        {:style {:paddingTop "2rem"}}
-       (if (:trace? @state/config)
-         (doall
-          (for [r (:reductions cmd)]
-            ^{:key (gensym "out")}
-            [make-segment (toString r)]))
-         [make-segment (-> cmd :reductions last toString)])
+       (if (contains? cmd :error)
+         [show-error cmd]
+         (if (:trace? @state/config)
+           (doall
+            (for [r (:reductions cmd)]
+              ^{:key (gensym "out")}
+              [make-segment (toString r)]))
+           [make-segment (-> cmd :reductions last toString)]))
        [:> ui/button
         {:attach "bottom"
          :compact true

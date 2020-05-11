@@ -10,10 +10,13 @@
 
 (defn handle-action []
   (if (not (empty? @state/command))
-    (let [new-input {:command @state/command
-                     :reductions (get-reductions @state/command)}
+    (let [new-input {:command @state/command}
+          merged (merge new-input
+                        (if (instaparser/failure? @state/command)
+                          {:error (instaparser/get-error @state/command)}
+                          {:reductions (get-reductions @state/command)}))
           old-index (count @state/outputs)]
-      (swap! state/outputs conj new-input)
+      (swap! state/outputs conj merged)
       (reset! state/index old-index)
       (reset-and-restore (gdom/getElement "input") "" 0))))
 
@@ -61,25 +64,14 @@
       :placeholder "Insertá una expresión lambda!"
       :fluid true
       :input {:autoComplete "off"}
-      :error (and (:errors? @state/config) (instaparser/failure?))
       :size "huge"
       :default-value @state/command
       :onKeyPress #(handle-key-press %)
       :onKeyUp #(handle-history-changes (.-key %))
       :onChange #(reset! state/command (.. % -target -value))
       :action {:content "Evaluar"
-               :onClick handle-action
-               :disabled (and (:errors? @state/config) (instaparser/failure?))}
+               :onClick handle-action}
       :style {:margin-bottom "5px"}}]
-    [:> ui/segment
-     {:textAlign "center"
-      :compact true
-      :vertical true
-      :basic true
-      :style {:position "absolute"
-              :left "50%"
-              :transform "translateX(-50%)"}}
-     [instaparser/help-label]]
     [make-arrow "left"]
     [make-arrow "right"]
     [:> ui/button
@@ -89,7 +81,6 @@
       :basic true
       :onClick insert-lambda}]
     [toggle-button "Trace" :trace?]
-    [toggle-button "Lint" :errors?]
     [toggle-button "Full" :full?]
     [toggle-button "Índices" :index?]]])
 

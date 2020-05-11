@@ -9,5 +9,4 @@
 (def config (r/atom {:trace? true
                      :full? false
                      :index? false
-                     :report? true
-                     :errors? true}))
+                     :report? true}))

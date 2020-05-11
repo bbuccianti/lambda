@@ -18,25 +18,18 @@
     ident = #'[a-z]+'
     var = #'[A-Za-z]+'")
 
-(defn failure? []
-  (and (not (empty? @state/command))
-       (:errors? @state/config)
-       (insta/failure? (lambda-parser @state/command))))
+(defn failure? [command]
+  (and (not (empty? command)) (insta/failure? (lambda-parser command))))
 
 (defn expectings [failure]
   (let [failures (map (comp str :expecting) (-> failure :reason))
-        cleaned (remove #(= (str %) "/^\\s+/") failures)]
-    (-> (str (-> cleaned (interleave (repeat "o")) butlast ((partial join " "))))
+        cleaned (remove #(= (str %) "/^\\s+/") failures)
+        connectors (conj (vec (repeat (- (count cleaned) 2) ", "))
+                         " o " ", ")]
+    (-> (apply str (butlast (interleave cleaned connectors)))
         (replace "/^[a-z]+/" "un parámetro")
         (replace "/^[A-Za-z]+/" "un identificador"))))
 
-(defn help-label []
-  (let [failure (insta/get-failure (lambda-parser @state/command))]
-    (when (failure?)
-      [:> ui/label
-       {:pointing "above"
-        :size "big"
-        :color "red"
-        :style {:z-index "1"}}
-       (str "¿Falta " (expectings failure)
-            " cerca de la posición " (-> failure :column) "?")])))
+(defn get-error [command]
+  (let [failure (insta/get-failure (lambda-parser command))]
+    (merge failure {:expectings (expectings failure)})))
