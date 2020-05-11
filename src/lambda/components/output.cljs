@@ -3,6 +3,7 @@
    [goog.dom :as gdom]
    [reagent.core :as r]
    [clojure.string :refer [split replace]]
+   [lambda.utils :refer [reset-and-restore]]
    [lambda.state :as state]
    [lambda.semantic :as ui]
    [lambda.stringy :refer [toString]]))
@@ -15,14 +16,10 @@
 (defn handle-copy [text label]
   (let [input (gdom/getElement "input")
         old @state/command]
-    (reset! state/command (clean-index text))
-    (js/setTimeout (fn []
-                     (.select input)
-                     (if (js/document.execCommand "copy")
-                       (reset! label "Copiado!")
-                       (reset! label "Error!"))
-                     (reset! state/command old))
-                   10)))
+    (js/setTimeout
+     (fn []
+       (reset-and-restore input (clean-index text) 0)
+       (reset! label "Copiado!")) 10)))
 
 (defn make-sub [value]
   ^{:key (gensym "sub")}
@@ -53,9 +50,7 @@
        [:> ui/segment
         {:size "huge"
          :textAlign "center"}
-        (if (:index? @state/config)
-          (fix-index input)
-          input)]
+        (fix-index input)]
        [:> ui/popup
         {:on "click"
          :pinned true
