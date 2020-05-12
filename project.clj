@@ -37,7 +37,8 @@
                          [figwheel-sidecar "0.5.19"]
                          [cider/piggieback "0.4.1"]
                          [nrepl "0.7.0-alpha3"]]
-         :plugins [[com.jakemccrary/lein-test-refresh "0.24.1"]]
+         :plugins [[com.jakemccrary/lein-test-refresh "0.24.1"]
+                   [venantius/ultra "0.6.0"]]
          :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
          :source-paths  ["src" "dev" "test"]
          :clean-targets ^{:protect false}
