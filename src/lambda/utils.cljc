@@ -1,11 +1,10 @@
 (ns lambda.utils
   (:require
-   [goog.dom :as gdom]
+   #?@(:cljs [[goog.dom :as gdom]])
    [lambda.state :as state]
    [lambda.lexer :refer [lex]]
    [lambda.normalizer :refer [restore]]
    [lambda.parser :refer [parse]]
-   [lambda.debruijnator :refer [debruijn]]
    [lambda.reducer :refer [all-reductions]]
    [lambda.stringy :refer [toString]]))
 
@@ -21,14 +20,16 @@
 (defn reset-and-restore [el cmd i]
   (set! (.-value el) cmd)
   (reset! state/command cmd)
-  (js/setTimeout #(.setSelectionRange el i i) 5))
+  #?(:cljs
+     (js/setTimeout #(.setSelectionRange el i i) 5)))
 
 (defn swap-history-and-input [f]
   (swap! state/index f)
   (let [old (get @state/outputs @state/index)]
-    (reset-and-restore (gdom/getElement "input")
-                       (if old (:command old) "")
-                       (if old (count (:command old)) 0))))
+    #?(:cljs
+       (reset-and-restore (gdom/getElement "input")
+                          (if old (:command old) "")
+                          (if old (count (:command old)) 0)))))
 
 (defn handle-history-changes [key]
   (case key

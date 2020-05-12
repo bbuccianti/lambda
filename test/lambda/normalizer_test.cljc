@@ -1,6 +1,7 @@
 (ns lambda.normalizer-test
   (:require
-   [cljs.test :refer [deftest are]]
+   #?@(:clj [[clojure.test :refer [deftest are]]]
+       :cljs [[cljs.test :refer [deftest are]]])
    [lambda.normalizer :refer [restore next-close regroup isolate]]
    [lambda.lexer :refer [lex]]))
 

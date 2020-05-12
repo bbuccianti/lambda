@@ -1,14 +1,15 @@
 (ns lambda.stringy-test
   (:require
-   [cljs.test :refer [deftest is are]]
+   #?@(:clj [[clojure.test :refer [deftest is are]]]
+       :cljs [[cljs.test :refer [deftest is are]]])
    [lambda.stringy :refer [toString]]
    [lambda.lexer :refer [lex]]
    [lambda.parser :refer [parse]]))
 
-(deftest vars
+#_(deftest vars
   (is (= "x x" (-> "(x x)" lex parse toString))))
 
-(deftest abst
+#_(deftest abst
   (are [exp act] (= exp (-> act lex parse toString))
     "x (λx.y y)"                 "(x (λx.(y y)))"
     "(λx.y y x) z"               "((λx.((y y) x)) z)"

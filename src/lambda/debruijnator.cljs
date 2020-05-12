@@ -14,7 +14,7 @@
                  target))
              cuerpo)}})
 
-(defn debruijn [expression]
+(defn debruijn [idents expression]
   (let [index (atom 0)]
     (postwalk (fn [target]
                 (if (contains? target :abst)

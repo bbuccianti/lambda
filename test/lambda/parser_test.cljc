@@ -1,6 +1,7 @@
 (ns lambda.parser-test
   (:require
-   [cljs.test :refer [deftest is are]]
+   #?@(:clj [[clojure.test :refer [deftest is are]]]
+       :cljs [[cljs.test :refer [deftest is are]]])
    [lambda.lexer :refer [lex]]
    [lambda.parser :refer [parse]]
    [lambda.normalizer :refer [restore]]

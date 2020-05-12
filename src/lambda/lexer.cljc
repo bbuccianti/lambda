@@ -16,7 +16,7 @@
     (all? upper-case s) :combi))
 
 (defn lex [s]
-  (->> (split s #"(\(|\)|\.|[A-Za-z]+)")
-       (map trim)
-       (remove empty?)
+  (->> (re-seq #"(\(|\)|\.|[A-Za-z]+|λ)" s)
+       (map (comp trim first))
+       #_(remove empty?)
        (map #(into {} {:tipo (translate %) :string %}))))
