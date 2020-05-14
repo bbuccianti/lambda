@@ -2,56 +2,33 @@
   (:require
    [clojure.walk :refer [postwalk prewalk]]))
 
-(defn- indexate [expr param index]
+(defn replace-in [expr param opndo]
   (cond
-    (contains? expr :apli)
-    {:apli
-     {:opdor (indexate (get-in expr [:apli :opdor]) param index)
-      :opndo (indexate (get-in expr [:apli :opndo]) param index)}}
+    (get-in expr [:apli] false)
+    (-> expr
+        (update-in [:apli :opdor] replace-in param opndo)
+        (update-in [:apli :opndo] replace-in param opndo))
 
-    (contains? expr :var)
-    (if (= (:var expr) (:ident param))
-      (assoc expr :index index)
-      expr)
+    (and (get-in expr [:abst] false)
+         (not= (get-in expr [:abst :param]) param))
+    (-> expr
+        (update-in [:abst :cuerpo] replace-in param opndo))
+
+    (and (contains? expr :var)
+         (= (:var expr) (:ident param)))
+    opndo
 
     :else expr))
-
-(defn alpha-rule [ids expr]
-  (let [{:keys [opdor opndo]} (:apli expr)
-        param (get-in opdor [:abst :param])]
-    (if (= param ids)
-      (-> expr
-          (assoc-in [:apli :opdor :abst :param :index] 1)
-          (indexate param 1))
-      expr)))
 
 (defn- beta-rule [m]
   (let [{:keys [opdor opndo]} (:apli m)
         param (get-in opdor [:abst :param])]
-    (if (and (not (nil? param)) (not (nil? opndo)))
-      (prewalk (fn [target]
-                 (if (and (= (:var target) (:ident param))
-                          (= (:index target) (:index param)))
-                   opndo
-                   target))
-               (get-in opdor [:abst :cuerpo]))
-      m)))
-
-(defn get-params [m]
-  (->> (tree-seq map? vals m)
-       (filter map?)
-       (keep :param)))
-
-(defn apply-alpha-rule? [m]
-  (let [params (get-params m)
-        freqs (frequencies params)
-        flt (filter (fn [[k v]] (> v 1)) freqs)]
-    (when flt (ffirst flt))))
+    (replace-in (get-in opdor [:abst :cuerpo])
+                param
+                opndo)))
 
 (defn step [m]
-  (if-let [ids (apply-alpha-rule? m)]
-    (alpha-rule ids m)
-    (beta-rule m)))
+  (beta-rule m))
 
 (defn can-reduce?
   ([m] (can-reduce? [] m))

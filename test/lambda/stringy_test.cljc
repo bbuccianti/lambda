@@ -6,10 +6,10 @@
    [lambda.lexer :refer [lex]]
    [lambda.parser :refer [parse]]))
 
-#_(deftest vars
+(deftest vars
   (is (= "x x" (-> "(x x)" lex parse toString))))
 
-#_(deftest abst
+(deftest abst
   (are [exp act] (= exp (-> act lex parse toString))
     "x (λx.y y)"                 "(x (λx.(y y)))"
     "(λx.y y x) z"               "((λx.((y y) x)) z)"
