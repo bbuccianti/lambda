@@ -41,7 +41,7 @@
     "a (λx.x x) a"     "(λx.x (λx.x x) x) a"
 
     "n (λx.x x) z"    "(λx y x.x y z) (λx y.y) M n"
-    ;;"x y"              "(λx y. y x) y x"
+    "x y"              "(λx y. y x) y x"
 
     "(λx.(λy.(λz.x z (y z))))"
     "(λy.(λx y z.x z (y z))) a"

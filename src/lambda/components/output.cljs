@@ -112,6 +112,6 @@
          :as "a"
          :target "_blank"
          :href "https://todo.sr.ht/~bbuccianti/lambda"}]
-       [:p "v0.92"]])))
+       [:p "v0.95"]])))
 
 

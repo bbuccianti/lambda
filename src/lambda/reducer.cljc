@@ -1,6 +1,34 @@
 (ns lambda.reducer
   (:require
+   [clojure.pprint :refer [pprint]]
    [clojure.walk :refer [postwalk prewalk]]))
+
+(defn get-params [m]
+  (->> (tree-seq map? vals m)
+       (filter map?)
+       (keep :param)))
+
+(defn indexate [expr target index]
+  (cond
+    (get-in expr [:apli] false)
+    (-> expr
+        (update-in [:apli :opdor] indexate target index)
+        (update-in [:apli :opndo] indexate target index))
+
+    (and (get-in expr [:abst] false)
+         (= (get-in expr [:abst :param :ident]) (:var target))
+         (= (get-in expr [:abst :param :index]) (:index target)))
+    (-> expr
+        (assoc-in [:abst :param :index] (inc index))
+        (update-in [:abst :cuerpo] indexate target (inc index)))
+
+    (= expr target)
+    (assoc-in expr [:index] index)
+
+    (get-in expr [:abst] false)
+    (update-in expr [:abst :cuerpo] indexate target index)
+
+    :else expr))
 
 (defn replace-in [expr param opndo]
   (cond
@@ -15,10 +43,18 @@
         (update-in [:abst :cuerpo] replace-in param opndo))
 
     (and (contains? expr :var)
-         (= (:var expr) (:ident param)))
+         (= (:var expr) (:ident param))
+         (= (:index expr) (:index param)))
     opndo
 
     :else expr))
+
+(defn- alpha-rule [m]
+  (let [{:keys [opdor opndo]} (:apli m)
+        index (if (:index opndo) (:index opndo) 0)]
+    {:apli
+     {:opdor (indexate opdor opndo index)
+      :opndo opndo}}))
 
 (defn- beta-rule [m]
   (let [{:keys [opdor opndo]} (:apli m)
@@ -28,7 +64,15 @@
                 opndo)))
 
 (defn step [m]
-  (beta-rule m))
+  (let [params (get-params m)
+        opndo (get-in m [:apli :opndo])
+        flt (filter
+             #(and (= (:var opndo) (:ident %))
+                   (= (:index opndo) (:index %)))
+             params)]
+    (if (empty? flt)
+      (beta-rule m)
+      (alpha-rule m))))
 
 (defn can-reduce?
   ([m] (can-reduce? [] m))

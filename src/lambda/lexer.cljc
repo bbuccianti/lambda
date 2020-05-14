@@ -18,5 +18,4 @@
 (defn lex [s]
   (->> (re-seq #"(\(|\)|\.|[A-Za-z]+|λ)" s)
        (map (comp trim first))
-       #_(remove empty?)
        (map #(into {} {:tipo (translate %) :string %}))))
