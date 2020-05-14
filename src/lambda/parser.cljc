@@ -45,6 +45,4 @@
     :else (first lxd)))
 
 (defn parse [lexed]
-  (-> (map match lexed)
-      flatten
-      transform))
+  (->> (map match lexed) flatten transform))
