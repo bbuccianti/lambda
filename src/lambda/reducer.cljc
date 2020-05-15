@@ -50,9 +50,6 @@
 
     :else expr))
 
-(defn- eta-rule [m]
-  (get-in m [:abst :cuerpo :apli :opdor]))
-
 (defn- alpha-rule [m]
   (let [{:keys [opdor opndo]} (:apli m)
         index (if (:index opndo) (:index opndo) 0)]
@@ -67,16 +64,8 @@
                 param
                 opndo)))
 
-(defn step [m]
-  (let [params (get-params m)
-        opndo (get-in m [:apli :opndo])
-        flt (filter
-             #(and (= (:var opndo) (:ident %))
-                   (= (:index opndo) (:index %)))
-             params)]
-    (if (empty? flt)
-      (beta-rule m)
-      (alpha-rule m))))
+(defn- eta-rule [m]
+  (get-in m [:abst :cuerpo :apli :opdor]))
 
 (defn can-reduce?
   ([m] (can-reduce? [] m))
@@ -98,17 +87,32 @@
 
      :else nil)))
 
+(defn step [path before]
+  (let [m (get-in before path)
+        params (get-params m)
+        opndo (get-in m [:apli :opndo])
+        flt (filter
+             #(and (= (:var opndo) (:ident %))
+                   (= (:index opndo) (:index %)))
+             params)]
+    (if (empty? flt)
+      {:rule "β"  :reduction (update-in before path beta-rule)}
+      {:rule "α" :reduction (update-in before path alpha-rule)})))
+
 (defn all-reductions [m]
-  (let [acc (transient [(toString m)])]
+  (let [acc (transient [{:rule nil :reduction (toString m)}])]
     (loop [before m]
       (let [path (can-reduce? before)]
         (if (nil? path)
           (persistent! acc)
-          (let [reduction
+          (let [result
                 (cond
-                  (= (count path) 0)    (step before)
-                  (= [:eta] path)       (eta-rule before)
-                  :else                 (update-in before path step))]
-            (conj! acc (toString reduction))
-            (recur reduction)))))))
+                  (= [:eta] path)
+                  {:rule "η" :reduction (eta-rule before)}
 
+                  (empty? path)
+                  {:rule "β" :reduction (beta-rule before)}
+
+                  :else (step path before))]
+            (conj! acc (update-in result [:reduction] toString))
+            (recur (:reduction result))))))))

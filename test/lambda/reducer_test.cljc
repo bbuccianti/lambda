@@ -22,7 +22,7 @@
 
 (deftest dificcile
     (are [exp act] (= exp (-> act lex restore parse
-                              all-reductions last))
+                              all-reductions last :reduction))
     "x"                "x"
     "x x"              "x x"
     "a a"              "(λy.y y) a"
@@ -95,4 +95,5 @@
 
     ;; Fact 3 = 6
     "(λf.(λx.f (f (f (f (f (f x)))))))"
-    "((λf.(λx.f (x x)) (λx.f (x x))) (λf.λx.( λp.λq.λr.p q r) ((λn.n (λz.(λx.λy.y)) (λx.λy.x)) x) (λf.λx.f x) ((λm.λn.λf.λx.m (n f) x) x (f ((λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)) x))))) (λf.λx.f (f (f x)))"))
+    "((λf.(λx.f (x x)) (λx.f (x x))) (λf.λx.( λp.λq.λr.p q r) ((λn.n (λz.(λx.λy.y)) (λx.λy.x)) x) (λf.λx.f x) ((λm.λn.λf.λx.m (n f) x) x (f ((λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)) x))))) (λf.λx.f (f (f x)))"
+    ))

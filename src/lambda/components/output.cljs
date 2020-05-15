@@ -47,10 +47,16 @@
     (fn []
       [:> ui/segment-group
        {:horizontal true}
+       [:> ui/label
+        {:color "olive"
+         :size "big"
+         :style {:position "absolute"
+                 :height "100%"}}
+        (:rule input)]
        [:> ui/segment
         {:size "huge"
          :textAlign "center"}
-        (fix-index input)]
+        (fix-index (:reduction input))]
        [:> ui/popup
         {:on "click"
          :pinned true
