@@ -48,7 +48,7 @@
       [:> ui/segment-group
        {:horizontal true}
        [:> ui/label
-        {:color "olive"
+        {:color "black"
          :size "big"
          :style {:position "absolute"
                  :height "100%"}}

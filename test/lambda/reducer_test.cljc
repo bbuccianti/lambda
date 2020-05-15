@@ -32,11 +32,11 @@
     "z y z"            "(λx.x y x) z"
     "z a z"            "(λb y.b y b) z a"
     "a c"              "(λx y. x y) (λz. z c) a"
-    "(λx.(λy.x))"      "(λy.(λx y.x)) a"
+    "(λx y.x)"         "(λy.(λx y.x)) a"
     "(λx.z z)"         "(λx.((λy.z y) z))"
     "(λy.a b)"         "((λx y.x) (a b))"
     "n n"              "M n"
-    "(λx.(λy.x y))"    "(λb.(λx y.x y)) a"
+    "(λx y.x y)"       "(λb.(λx y.x y)) a"
     "x (λt.t) x"       "(λu.u (λt.t) ((λy.y) u)) ((λz. z) x)"
 
     "a (λx.x x) a"     "(λx.x (λx.x x) x) a"
@@ -44,10 +44,10 @@
     "n (λx.x x) z"    "(λx y x.x y z) (λx y.y) M n"
     "x y"              "(λx y. y x) y x"
 
-    "(λx.(λy.(λz.x z (y z))))"
-    "(λy.(λx y z.x z (y z))) a"
+    "(λx y z.x z (y z))"
+    "(λy x y z.x z (y z)) a"
 
-    "(λy.(λx.(λy.(λz.x z (y z)))))"
+    "(λy x y z.x z (y z))"
     "((λx y.x) (λx y z.x z (y z)))"
 
     "(λy.y y (λx.y a) a)" "(λz.(λy.y y (λx.y z) z)) a"
@@ -60,40 +60,39 @@
     "(λx.(λu.u) (λv.x v)) ((λt.t t) w)"
 
     ;; Pow 2 3 = 8
-    "(λf.(λx.f (f (f (f (f (f (f (f x)))))))))"
+    "(λf x.f (f (f (f (f (f (f (f x))))))))"
     "(λm.λn.λf.λx.n m f x) (λf.λx.f (f x)) (λf.λx.f (f (f x)))"
 
     ;; Succ 3 = 4
-    "(λf.(λx.f (f (f (f x)))))"
+    "(λf x.f (f (f (f x))))"
     "(λn.λf.λx.f (n f x)) (λf.λx.(f (f (f x))))"
 
     ;; Pred 5 = 4
-    "(λf.(λx.f (f (f (f x)))))"
+    "(λf x.f (f (f (f x))))"
     "(λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)) (λf.λx.f (f (f (f (f x)))))"
 
     ;; Add 2 3 = 5
-    "(λf.(λx.f (f (f (f (f x))))))"
+    "(λf x.f (f (f (f (f x)))))"
     "(λm.λn.λf.λx.m f (n f x)) (λf.λx.f (f x)) (λf.λx.f (f (f x)))"
 
     ;; Sub 3 1 = 2
-    "(λf.(λx.f (f x)))"
+    "(λf x.f (f x))"
     "(λm.λn.n (λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)) m) (λf.λx.f (f (f x))) (λf.λx.f x)"
 
     ;; Mul 2 3 = 6
-    "(λf.(λx.f (f (f (f (f (f x)))))))"
+    "(λf x.f (f (f (f (f (f x))))))"
     "(λm.λn.λf.λx.m (n f) x) (λf.λx.f (f x)) (λf.λx.f (f (f x)))"
 
     ;; Div 6 2 = 3
-    "(λf.(λx.f (f (f x))))"
+    "(λf x.f (f (f x)))"
     "(λn.((λf.(λx.f (x x)) (λx.f (x x))) (λc.λn.λm.λf.λx.(λd.(λp.λq.λr.p q r) ((λn.n (λz.(λx.λy.y))
     (λx.λy.x)) d) ((λf.λx.x) f x) (f (c d m f x))) ((λm.λn.n (λn.λf.λx.n (λg.λh.h (g f)) (λu.x)
     (λu.u)) m) n m))) ((λn.λf.λx.f (n f x)) n)) (λf.λx.f (f (f (f (f (f x)))))) (λf.λx.f (f x))"
 
     ;; Fibo 6 = 8
-    "(λf.(λx.f (f (f (f (f (f (f (f x)))))))))"
+    "(λf x.f (f (f (f (f (f (f (f x))))))))"
     "(λn.n (λf.λa.λb.f b ((λm.λn.λf.λx.m f (n f x)) a b)) (λx.λy.x) (λf.λx.x) (λf.λx.f x)) (λf.λx.f (f (f (f (f (f x))))))"
 
     ;; Fact 3 = 6
-    "(λf.(λx.f (f (f (f (f (f x)))))))"
-    "((λf.(λx.f (x x)) (λx.f (x x))) (λf.λx.( λp.λq.λr.p q r) ((λn.n (λz.(λx.λy.y)) (λx.λy.x)) x) (λf.λx.f x) ((λm.λn.λf.λx.m (n f) x) x (f ((λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)) x))))) (λf.λx.f (f (f x)))"
-    ))
+    "(λf x.f (f (f (f (f (f x))))))"
+    "((λf.(λx.f (x x)) (λx.f (x x))) (λf.λx.( λp.λq.λr.p q r) ((λn.n (λz.(λx.λy.y)) (λx.λy.x)) x) (λf.λx.f x) ((λm.λn.λf.λx.m (n f) x) x (f ((λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)) x))))) (λf.λx.f (f (f x)))"))
