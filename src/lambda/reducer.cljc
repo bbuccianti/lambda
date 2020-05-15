@@ -1,7 +1,8 @@
 (ns lambda.reducer
   (:require
    [clojure.pprint :refer [pprint]]
-   [clojure.walk :refer [postwalk prewalk]]))
+   [clojure.walk :refer [postwalk prewalk]]
+   [lambda.stringy :refer [toString]]))
 
 (defn get-params [m]
   (->> (tree-seq map? vals m)
@@ -98,7 +99,7 @@
      :else nil)))
 
 (defn all-reductions [m]
-  (let [acc (transient [m])]
+  (let [acc (transient [(toString m)])]
     (loop [before m]
       (let [path (can-reduce? before)]
         (if (nil? path)
@@ -108,6 +109,6 @@
                   (= (count path) 0)    (step before)
                   (= [:eta] path)       (eta-rule before)
                   :else                 (update-in before path step))]
-            (conj! acc reduction)
+            (conj! acc (toString reduction))
             (recur reduction)))))))
 

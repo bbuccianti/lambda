@@ -22,7 +22,7 @@
 
 (deftest dificcile
     (are [exp act] (= exp (-> act lex restore parse
-                              all-reductions last toString))
+                              all-reductions last))
     "x"                "x"
     "x x"              "x x"
     "a a"              "(λy.y y) a"

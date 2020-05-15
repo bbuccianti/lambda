@@ -101,8 +101,8 @@
            (doall
             (for [r (:reductions cmd)]
               ^{:key (gensym "out")}
-              [make-segment (toString r)]))
-           [make-segment (-> cmd :reductions last toString)]))
+              [make-segment r]))
+           [make-segment (-> cmd :reductions last)]))
        [:> ui/button
         {:attach "bottom"
          :compact true
