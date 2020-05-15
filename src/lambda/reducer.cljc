@@ -49,6 +49,9 @@
 
     :else expr))
 
+(defn- eta-rule [m]
+  (get-in m [:abst :cuerpo :apli :opdor]))
+
 (defn- alpha-rule [m]
   (let [{:keys [opdor opndo]} (:apli m)
         index (if (:index opndo) (:index opndo) 0)]
@@ -84,6 +87,11 @@
      (or (can-reduce? (conj path :apli :opdor) (-> m :apli :opdor))
          (can-reduce? (conj path :apli :opndo) (-> m :apli :opndo)))
 
+     (and (empty? path)
+          (= (get-in m [:abst :param :ident] "ident")
+             (get-in m [:abst :cuerpo :apli :opndo :var] "var")))
+     (conj path :eta)
+
      (get-in m [:abst] false)
      (can-reduce? (conj path :abst :cuerpo) (get-in m [:abst :cuerpo]))
 
@@ -95,9 +103,11 @@
       (let [path (can-reduce? before)]
         (if (nil? path)
           (persistent! acc)
-          (let [reduction (if (= (count path) 0)
-                            (step before)
-                            (update-in before path step))]
+          (let [reduction
+                (cond
+                  (= (count path) 0)    (step before)
+                  (= [:eta] path)       (eta-rule before)
+                  :else                 (update-in before path step))]
             (conj! acc reduction)
             (recur reduction)))))))
 

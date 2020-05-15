@@ -12,12 +12,13 @@
   (are [exp act] (= exp (-> act lex restore parse can-reduce?))
     nil "x"
     nil "(x x)"
-    [] "(λx y.x) a"
-    [:apli :opndo] "a ((λx y.x) b)"
-    [:apli :opdor] "(λx y. y x) y x"
     [] "(λu.u (λt.t) ((λy.y) u)) ((λz.z) x)"
-    [:apli :opdor :apli :opdor] "(λy x z.z x y) a b c"
-    [:abst :cuerpo] "(λx.((λy.z y) z))"))
+    []                           "(λx y.x) a"
+    [:apli :opndo]               "a ((λx y.x) b)"
+    [:apli :opdor]               "(λx y. y x) y x"
+    [:apli :opdor :apli :opdor]  "(λy x z.z x y) a b c"
+    [:abst :cuerpo]              "(λx.((λy.z y) z))"
+    [:eta]                       "(λv.w w v)"))
 
 (deftest dificcile
     (are [exp act] (= exp (-> act lex restore parse
@@ -53,6 +54,10 @@
 
     "a c (b c)"
     "(λx y z.x z (y z)) a b c"
+
+    ;; Eta rule
+    "w w"
+    "(λx.(λu.u) (λv.x v)) ((λt.t t) w)"
 
     ;; Pow 2 3 = 8
     "(λf.(λx.f (f (f (f (f (f (f (f x)))))))))"
