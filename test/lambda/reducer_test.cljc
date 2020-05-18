@@ -20,7 +20,7 @@
     [:abst :cuerpo]              "(λx.((λy.z y) z))"
     [:eta]                       "(λv.w w v)"))
 
-(deftest dificcile
+(deftest simple-ones
     (are [exp act] (= exp (-> act lex restore parse
                               all-reductions last :reduction))
     "x"                "x"
@@ -53,8 +53,11 @@
     "(λy.y y (λx.y a) a)" "(λz.(λy.y y (λx.y z) z)) a"
 
     "a c (b c)"
-    "(λx y z.x z (y z)) a b c"
+    "(λx y z.x z (y z)) a b c"))
 
+(deftest dificcile
+  (are [exp act] (= exp (-> act lex restore parse all-reductions
+                            last :reduction))
     ;; Eta rule
     "w w"
     "(λx.(λu.u) (λv.x v)) ((λt.t t) w)"
