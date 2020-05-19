@@ -3,30 +3,38 @@
    [lambda.lexer :refer [lex]]
    [lambda.normalizer :refer [next-x next-close]]))
 
-(def combis {"I" (lex "(λx.x)")
-             "K" (lex "(λx.(λy.x))")
-             "S" (lex "(λx.(λy.(λz.((x z) (y z)))))")
-             "B" (lex "(λx.(λy.(λz.(x (y z)))))")
-             "C" (lex "(λx.(λy.(λz.((x z) y))))")
-             "D" (lex "(λx.(λy.(λz.(λv.((x y) (z v)))")
-             "J" (lex "(λx.(λy.(λz.(λv.((x y) ((x v) z)))")
-             "M" (lex "(λx.(x x))")
-             "O" (lex "(λx.(λy.y))")
-             "R" (lex "(λx.(λy.(λz.((y z) x))))")
-             "Q" (lex "(λx.(λy.(λz.(y (x z)))))")
-             "W" (lex "(λx.(λy.((x y) y)))")
-             "T" (lex "(λx.(λy.(y x)))")
-             "Y" (lex "(λf.((λx.(f (x x))) (λx.(f (x x)))))")})
+(declare combis)
+(def list-of-combinators
+  ["I" "(λx.x)"
+   "K" "(λx.(λy.x))"
+   "S" "(λx.(λy.(λz.((x z) (y z)))))"
+   "B" "(λx.(λy.(λz.(x (y z)))))"
+   "C" "(λx.(λy.(λz.((x z) y))))"
+   "D" "(λx.(λy.(λz.(λv.((x y) (z v)))"
+   "J" "(λx.(λy.(λz.(λv.((x y) ((x v) z)))"
+   "M" "(λx.(x x))"
+   "O" "(λx.(λy.y))"
+   "R" "(λx.(λy.(λz.((y z) x))))"
+   "Q" "(λx.(λy.(λz.(y (x z)))))"
+   "W" "(λx.(λy.((x y) y)))"
+   "T" "(λx.(λy.(y x)))"
+   "Y" "(λf.((λx.(f (x x))) (λx.(f (x x)))))"])
 
 (defn- match [item]
   (case (:tipo item)
     :ident {:var (:string item)}
-    :combi (map match (combis (:string item)))
+    :combi (combis (:string item))
     (:tipo item)))
+
+(def combis
+  (reduce (fn [acc [k v]]
+            (into acc {k (->> v lex (map match))}))
+          {}
+          (partition 2 list-of-combinators)))
 
 (defn- transform [lxd]
   (cond
-    (and (= (first lxd) :abre-p) (= (second lxd) :lambda))
+    (= [:abre-p :lambda] (take 2 lxd))
     (let [punto (int (next-x :punto lxd))
           c (next-close lxd #{:abre-p :cierra-p} :cierra-p)]
       {:abst
@@ -45,4 +53,4 @@
     :else (first lxd)))
 
 (defn parse [lexed]
-  (->> (map match lexed) flatten transform))
+  (->> lexed (map match) flatten transform))
