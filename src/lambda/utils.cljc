@@ -25,12 +25,16 @@
      (js/setTimeout #(.setSelectionRange el i i) 5)))
 
 (defn swap-history-and-input [f]
+  (swap! state/index f)
   (let [old (get @state/outputs @state/index)]
-    (swap! state/index f)
     #?(:cljs
        (reset-and-restore (gdom/getElement "input")
-                          (if old (:command old) "")
-                          (if old (count (:command old)) 0)))))
+                          (if (contains? old :command)
+                            (:command old)
+                            "")
+                          (if (contains? old :command)
+                            (count (:command old))
+                            0)))))
 
 (defn handle-history-changes [key]
   (case key

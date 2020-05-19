@@ -52,11 +52,14 @@
          :size "big"
          :style {:position "absolute"
                  :height "100%"}}
-        (:rule input)]
+        (if (map? input)
+          (:rule input))]
        [:> ui/segment
         {:size "huge"
          :textAlign "center"}
-        (fix-index (:reduction input))]
+        (fix-index (if (map? input)
+                     (:reduction input)
+                     input))]
        [:> ui/popup
         {:on "click"
          :pinned true
@@ -103,12 +106,10 @@
        {:style {:paddingTop "2rem"}}
        (if (contains? cmd :error)
          [show-error cmd]
-         (if (:trace? @state/config)
-           (doall
-            (for [r (:reductions cmd)]
-              ^{:key (gensym "out")}
-              [make-segment r]))
-           [make-segment (-> cmd :reductions last)]))
+         (doall
+          (for [r (:reductions cmd)]
+            ^{:key (gensym "out")}
+            [make-segment r])))
        [:> ui/button
         {:attach "bottom"
          :compact true
