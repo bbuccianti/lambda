@@ -99,20 +99,26 @@
       {:rule "β"  :reduction (update-in before path beta-rule)}
       {:rule "α" :reduction (update-in before path alpha-rule)})))
 
-(defn all-reductions [m]
-  (let [acc (transient [{:rule nil :reduction (toString m)}])]
-    (loop [before m]
-      (let [path (can-reduce? before)]
-        (if (nil? path)
-          (persistent! acc)
-          (let [result
-                (cond
-                  (= [:eta] path)
-                  {:rule "η" :reduction (eta-rule before)}
+(defn all-reductions
+  ([m]
+   (all-reductions false m))
+  ([only-last? m]
+   (let [acc (transient [{:rule nil :reduction (toString m)}])]
+     (loop [before m]
+       (let [path (can-reduce? before)]
+         (if (nil? path)
+           (if only-last?
+             before
+             (persistent! acc))
+           (let [result
+                 (cond
+                   (= [:eta] path)
+                   {:rule "η" :reduction (eta-rule before)}
 
-                  (empty? path)
-                  {:rule "β" :reduction (beta-rule before)}
+                   (empty? path)
+                   {:rule "β" :reduction (beta-rule before)}
 
-                  :else (step path before))]
-            (conj! acc (update-in result [:reduction] toString))
-            (recur (:reduction result))))))))
+                   :else (step path before))]
+             (when-not only-last?
+               (conj! acc (update-in result [:reduction] toString)))
+             (recur (:reduction result)))))))))

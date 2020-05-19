@@ -8,7 +8,7 @@
 (def command (#?(:clj atom :cljs r/atom) ""))
 (def index (#?(:clj atom :cljs r/atom) 0))
 (def config (#?(:clj atom :cljs r/atom)
-             {:trace? true
+             {:trace? false
               :full? false
               :index? false
               :report? true}))
