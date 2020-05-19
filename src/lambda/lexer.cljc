@@ -2,20 +2,17 @@
   (:require
    [clojure.string :refer [lower-case upper-case split trim]]))
 
-(defn- all? [f s]
-  (and (re-matches #"[A-Za-z]*" s) (= s (f s))))
-
 (defn- translate [s]
-  (cond
-    (= "(" s)           :abre-p
-    (= ")" s)           :cierra-p
-    (= "λ" s)           :lambda
-    (= "\\" s)          :lambda
-    (= "." s)           :punto
-    (all? lower-case s) :ident
-    (all? upper-case s) :combi))
+  (condp = s
+    "(" :abre-p
+    ")" :cierra-p
+    "λ" :lambda
+    "." :punto
+    (lower-case s) :ident
+    (upper-case s) :combi))
 
 (defn lex [s]
   (->> (re-seq #"(\(|\)|\.|[A-Za-z]+|λ)" s)
-       (map (comp trim first))
-       (map #(into {} {:tipo (translate %) :string %}))))
+       (map #(let [trimmed ((comp trim first) %)]
+               (hash-map :tipo (translate trimmed)
+                         :string trimmed)))))

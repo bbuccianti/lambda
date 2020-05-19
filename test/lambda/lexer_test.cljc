@@ -27,5 +27,3 @@
       {:tipo :ident :string "z"}
       {:tipo :cierra-p :string ")"})
     "((λx.(x y))z)"))
-
-
