@@ -12,13 +12,13 @@
   (-> input lex restore parse all-reductions))
 
 (defn wrapped-dec [n]
-  (if (> 0 (dec n)) (count @state/outputs) (dec n)))
+  (if (> 0 (dec (int n))) (count @state/outputs) (dec (int n))))
 
 (defn wrapped-inc [n]
-  (min (inc n) (count @state/outputs)))
+  (min (inc (int n)) (count @state/outputs)))
 
 (defn reset-and-restore [el cmd i]
-  (set! (.-value el) cmd)
+  #?(:cljs (set! (.-value el) cmd))
   (reset! state/command cmd)
   #?(:cljs
      (js/setTimeout #(.setSelectionRange el i i) 5)))

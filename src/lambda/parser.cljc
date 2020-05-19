@@ -21,13 +21,13 @@
 (defn- match [item]
   (case (:tipo item)
     :ident {:var (:string item)}
-    :combi (map match (get combis (:string item)))
+    :combi (map match (combis (:string item)))
     (:tipo item)))
 
 (defn- transform [lxd]
   (cond
     (and (= (first lxd) :abre-p) (= (second lxd) :lambda))
-    (let [punto (next-x :punto lxd)
+    (let [punto (int (next-x :punto lxd))
           c (next-close lxd #{:abre-p :cierra-p} :cierra-p)]
       {:abst
        {:param {:ident (:var (nth lxd (dec punto)))}
@@ -35,7 +35,7 @@
 
     (= (first lxd) :abre-p)
     (let [inner (rest (butlast lxd))
-          c (next-close inner #{:abre-p :cierra-p} :cierra-p)]
+          c (int (next-close inner #{:abre-p :cierra-p} :cierra-p))]
       (if (map? (first inner))
         {:apli {:opdor (first inner)
                 :opndo (transform (rest inner))}}
