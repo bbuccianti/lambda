@@ -21,9 +21,7 @@
     [:eta]                       "(λv.w w v)"))
 
 (deftest simple-ones
-    (are [exp act] (= exp (->> act lex restore parse
-                               (all-reductions :only-last)
-                               toString))
+    (are [exp act] (= exp (->> act lex restore parse all-reductions))
     "x"                "x"
     "x x"              "x x"
     "a a"              "(λy.y y) a"
@@ -57,9 +55,7 @@
     "(λx y z.x z (y z)) a b c"))
 
 (deftest dificcile
-  (are [exp act] (= exp (->> act lex restore parse
-                             (all-reductions :only-last)
-                             toString))
+  (are [exp act] (= exp (->> act lex restore parse all-reductions))
     ;; Eta rule
     "w w"
     "(λx.(λu.u) (λv.x v)) ((λt.t t) w)"

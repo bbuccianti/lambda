@@ -102,14 +102,14 @@
 (defn all-reductions
   ([m]
    (all-reductions false m))
-  ([only-last? m]
+  ([traced? m]
    (let [acc (transient [{:rule nil :reduction (toString m)}])]
      (loop [before m]
        (let [path (can-reduce? before)]
          (if (nil? path)
-           (if only-last?
-             before
-             (persistent! acc))
+           (if traced?
+             (persistent! acc)
+             (toString before))
            (let [result
                  (cond
                    (= [:eta] path)
@@ -119,6 +119,6 @@
                    {:rule "β" :reduction (beta-rule before)}
 
                    :else (step path before))]
-             (when-not only-last?
+             (when traced?
                (conj! acc (update-in result [:reduction] toString)))
              (recur (:reduction result)))))))))

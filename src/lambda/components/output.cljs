@@ -52,14 +52,11 @@
          :size "big"
          :style {:position "absolute"
                  :height "100%"}}
-        (if (map? input)
-          (:rule input))]
+        (if (empty? (:rule input)) "..." (:rule input))]
        [:> ui/segment
         {:size "huge"
          :textAlign "center"}
-        (fix-index (if (map? input)
-                     (:reduction input)
-                     input))]
+        (fix-index (if (map? input) (:reduction input) input))]
        [:> ui/popup
         {:on "click"
          :pinned true
@@ -99,17 +96,26 @@
      {:style {:font-size "18px"}}
      (str "¿Falta " (-> cmd :error :expectings) "?")]]])
 
+(defn make-segments [cmd]
+  (fn [cmd]
+    [:> ui/container
+     (if (string? (:reductions cmd))
+       [make-segment (:reductions cmd)]
+       (doall
+        (for [r (-> cmd :reductions)]
+          ^{:key (gensym "out")}
+          [make-segment r])))]))
+
 (defn results []
-  (when (< @state/index (count @state/outputs))
+  (fn []
     (let [cmd (get @state/outputs @state/index)]
       [:> ui/container
        {:style {:paddingTop "2rem"}}
-       (if (contains? cmd :error)
-         [show-error cmd]
-         (doall
-          (for [r (:reductions cmd)]
-            ^{:key (gensym "out")}
-            [make-segment r])))
+       [:p @state/index]
+       (when (contains? cmd :error)
+         [show-error cmd])
+       (when (contains? cmd :reductions)
+         [make-segments cmd])
        [:> ui/button
         {:attach "bottom"
          :compact true
