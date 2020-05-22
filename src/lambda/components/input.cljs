@@ -11,11 +11,12 @@
 
 (defn handle-action []
   (if (not (empty? @state/command))
-    (let [new-input {:command @state/command}
+    (let [cmd @state/command
+          new-input {:command cmd}
           merged (merge new-input
-                        (if (instaparser/failure? @state/command)
-                          {:error (instaparser/get-error @state/command)}
-                          {:reductions (get-reductions @state/command)}))
+                        (if (instaparser/failure? cmd)
+                          {:error (instaparser/get-error cmd)}
+                          {:reductions (get-reductions cmd)}))
           old-index (count @state/outputs)]
       (swap! state/outputs conj merged)
       (reset! state/index old-index)

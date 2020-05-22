@@ -111,7 +111,6 @@
     (let [cmd (get @state/outputs @state/index)]
       [:> ui/container
        {:style {:paddingTop "2rem"}}
-       [:p @state/index]
        (when (contains? cmd :error)
          [show-error cmd])
        (when (contains? cmd :reductions)

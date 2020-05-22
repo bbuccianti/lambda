@@ -10,13 +10,14 @@
    [lambda.semantic :as ui]))
 
 (defparser lambda-parser
-  "expr = var | <whitespace>* abstraction | <whitespace>* application
-    application = <'('> <whitespace>* expr <whitespace>* expr <whitespace>* <')'> | (<whitespace>* expr)*
-    abstraction = <'λ'> (<whitespace>* ident <whitespace>*)+ <'.'> body
-    whitespace = #'\\s+'
-    body = expr
-    ident = #'[a-z]+'
-    var = #'[A-Za-z]+'")
+  "expr = var | <s>* abstraction | <s>* application
+   application = <'('> <s>* expr <s>* expr <s>* <')'> | (<s>* expr)*
+   abstraction = lambda (<s>* ident <s>*)+ <'.'> <s>* body
+   lambda = <'λ'>
+   s = #'\\s+'
+   body = expr
+   ident = #'[a-z]+'
+   var = #'[A-Za-z]+'")
 
 (defn failure? [command]
   (and (not (empty? command)) (insta/failure? (lambda-parser command))))
