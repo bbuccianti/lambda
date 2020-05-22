@@ -1,13 +1,10 @@
 (ns lambda.stringy
   (:require
-   [clojure.string :refer [replace]]
+   [clojure.string :as string]
    [lambda.state :as state]))
 
 (defn toString
-  ([m]
-   (-> (toString m false false)
-       (replace #"λ " "λ")
-       (replace #"\. " ".")))
+  ([m] (-> (toString m nil nil) (string/replace #"([λ.]) " "$1")))
   ([m apli-operand inside-abst]
    (let [full? (:full? @state/config)]
      (cond
