@@ -4,7 +4,7 @@ packages:
   - nodejs
   - npm
   - rsync
-  - jre10-openjdk-headless
+  - jre-openjdk-headless
 sources:
   - https://git.sr.ht/~bbuccianti/lambda
 environment:
