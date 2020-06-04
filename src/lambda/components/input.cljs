@@ -20,7 +20,8 @@
           old-index (count @state/outputs)]
       (swap! state/outputs conj merged)
       (reset! state/index old-index)
-      (reset-and-restore (gdom/getElement "input") "" 0))))
+      (when (contains? merged :reductions)
+        (reset-and-restore (gdom/getElement "input") "" 0)))))
 
 (defn insert-lambda [e]
   (let [input (gdom/getElement "input")
